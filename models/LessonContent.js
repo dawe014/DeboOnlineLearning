@@ -1,9 +1,14 @@
 const mongoose = require('mongoose');
 
 const lessonContentSchema = new mongoose.Schema({
+  contentTitle: {
+    type: String,
+    required: [true, 'A content must have a title'],
+    unique: true,
+  },
   type: {
     type: String,
-    enum: ['video', 'article', 'quiz'],
+    enum: ['video', 'article', 'quiz', 'other'],
     required: [true, 'Content type is required'],
   },
   url: {

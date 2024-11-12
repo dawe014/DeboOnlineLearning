@@ -11,7 +11,7 @@ router
   .route('/:id/content')
   .post(
     protect,
-    roleCheck(['admin', 'instructor']),
+    roleCheck('admin', 'instructor'),
     courseContentController.createContent,
   ); // Create new content
 
@@ -20,12 +20,12 @@ router
   .get(protect, courseContentController.getContent) // Get specific content by ID
   .patch(
     protect,
-    roleCheck(['admin', 'instructor']),
+    roleCheck('admin', 'instructor'),
     courseContentController.updateContent,
   ) // Update content
   .delete(
     protect,
-    roleCheck(['admin', 'instructor']),
+    roleCheck('admin', 'instructor'),
     courseContentController.deleteContent,
   ); // Delete content
 

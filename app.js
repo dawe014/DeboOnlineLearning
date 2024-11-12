@@ -1,3 +1,4 @@
+const cors = require('cors');
 const express = require('express');
 const usersRoutes = require('./routes/usersRoutes');
 const courseRoutes = require('./routes/courseRoutes');
@@ -9,6 +10,11 @@ const quizSubmissionRoutes = require('./routes/quizSubmissionRoutes');
 
 const app = express();
 app.use(express.json());
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+  }),
+);
 
 // API Routes
 app.use('/api/v1/users', usersRoutes);

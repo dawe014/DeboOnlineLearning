@@ -10,7 +10,7 @@ router
   .route('/:id/lesson')
   .post(
     protect,
-    roleCheck(['admin', 'instructor']),
+    roleCheck('admin', 'instructor'),
     lessonController.createLesson,
   ); // Create a new lesson
 
@@ -19,12 +19,12 @@ router
   .get(protect, lessonController.getLesson) // Get a specific lesson by ID
   .patch(
     protect,
-    roleCheck(['admin', 'instructor']),
+    roleCheck('admin', 'instructor'),
     lessonController.updateLesson,
   ) // Update a lesson
   .delete(
     protect,
-    roleCheck(['admin', 'instructor']),
+    roleCheck('admin', 'instructor'),
     lessonController.deleteLesson,
   ); // Delete a lesson
 

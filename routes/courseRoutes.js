@@ -10,7 +10,7 @@ router
   .get(courseController.getAllCourses) // Get all courses
   .post(
     protect,
-    roleCheck(['admin', 'instructor']),
+    roleCheck('admin', 'instructor'),
     courseController.createCourse,
   ); // Create a new course
 
@@ -19,12 +19,12 @@ router
   .get(courseController.getCourse) // Get a specific course by ID
   .patch(
     protect,
-    roleCheck(['admin', 'instructor']),
+    roleCheck('admin', 'instructor'),
     courseController.updateCourse,
   ) // Update a course
   .delete(
     protect,
-    roleCheck(['admin', 'instructor']),
+    roleCheck('admin', 'instructor'),
     courseController.deleteCourse,
   ); // Delete a course
 

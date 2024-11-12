@@ -1,0 +1,56 @@
+/* custom-quill.css */
+
+/* Customize the toolbar background and text colors */
+.ql-toolbar {
+  background-color: #000000; /* Change toolbar background color */
+  color: #0891B2 !important; /* Change toolbar text color */
+}
+
+/* Customize the editor background and text colors */
+.ql-editor {
+  background-color: #f4f4f4; /* Change editor background color */
+  color: #333; /* Change editor text color */
+}
+
+/* Customize the button colors in the toolbar */
+.ql-toolbar .ql-stroke {
+  fill: white; /* Change icon color */
+}
+
+
+/* Customize the active button color */
+.ql-toolbar .ql-active {
+  color: gray !important; /* Change text color for active button */
+}
+
+/* Customizing the font style in the editor */
+.ql-editor {
+  font-family: 'Arial', sans-serif; /* Change font family */
+  font-size: 14px; /* Change font size */
+}
+.ql-toolbar .ql-active {
+  color: white !important; /* Active button text color */
+}
+
+/* Customizing the border of the editor */
+.ql-editor {
+  border: 1px solid #ccc; /* Add border */
+  border-radius: 4px; /* Rounded corners */
+}
+
+/* Customizing the scrollbar */
+.ql-editor::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+.ql-editor::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Track color */
+}
+
+.ql-editor::-webkit-scrollbar-thumb {
+  background: #888; /* Scrollbar color */
+}
+
+.ql-editor::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Scrollbar hover color */
+}

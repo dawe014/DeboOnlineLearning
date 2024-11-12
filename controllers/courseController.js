@@ -33,11 +33,7 @@ exports.getCourse = async (req, res) => {
 exports.createCourse = async (req, res) => {
   try {
     const { title, description, category } = req.body;
-    if (req.user.role !== 'instructor' || req.user.role !== 'admin') {
-      return res
-        .status(403)
-        .json({ message: 'Not authorized to create a course' });
-    }
+
     const newCourse = await Course.create({
       title,
       description,

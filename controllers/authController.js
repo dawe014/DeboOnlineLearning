@@ -4,7 +4,7 @@ const User = require('../models/User');
 
 // Register User
 exports.registerUser = async (req, res) => {
-  const { name, email, password, confirmPassword } = req.body;
+  const { name, email, password } = req.body;
 
   try {
     // Check if the user already exists
@@ -14,9 +14,9 @@ exports.registerUser = async (req, res) => {
     }
 
     // Check if passwords match
-    if (password !== confirmPassword) {
-      return res.status(400).json({ message: 'Passwords do not match' });
-    }
+    // if (password !== confirmPassword) {
+    //   return res.status(400).json({ message: 'Passwords do not match' });
+    // }
     const newUser = await User.create({ name, email, password });
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN,
@@ -99,6 +99,24 @@ exports.getSingleUser = async (req, res) => {
   }
 };
 
+exports.getCurrentUser = async (req, res) => {
+  try {
+    // Assuming req.user is populated by your authentication middleware
+    const user = await User.findById(req.user.id).select('-password'); // Exclude password for security
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
 // Update User Profile
 exports.updateUserProfile = async (req, res) => {
   try {
@@ -121,6 +139,32 @@ exports.updateUserProfile = async (req, res) => {
     // Update password if provided
     if (password) {
       user.password = await bcrypt.hash(password, 12);
+    }
+
+    await user.save();
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+exports.updateUserRole = async (req, res) => {
+  try {
+    const { role } = req.body; // Extract role from request body
+    const user = await User.findById(req.params.id); // Get user by ID from request parameters
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Update role if provided
+    if (role) {
+      user.role = role; // Ensure you validate the role as per your application logic
+    } else {
+      return res.status(400).json({ message: 'Role must be provided' });
     }
 
     await user.save();
