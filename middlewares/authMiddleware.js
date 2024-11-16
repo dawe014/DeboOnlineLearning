@@ -11,6 +11,7 @@ const protect = (req, res, next) => {
   try {
     const decoded = jwt.verify(tokenValue, process.env.JWT_SECRET);
     req.user = decoded; // Store the entire decoded object
+    console.log(req.user);
     next();
   } catch (err) {
     console.error(err); // Log the error for debugging

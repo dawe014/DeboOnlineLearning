@@ -17,7 +17,13 @@ exports.getAllCourses = async (req, res) => {
 // Get a specific course by ID
 exports.getCourse = async (req, res) => {
   try {
-    const course = await Course.findById(req.params.id).populate('lessons');
+    const course = await Course.findById(req.params.id).populate({
+      path: 'lessons',
+      populate: {
+        path: 'contents',
+      },
+    });
+
     if (!course) {
       return res
         .status(404)

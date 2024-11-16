@@ -1,4 +1,6 @@
 const Enrollment = require('../models/enrollmentModel');
+const Progress = require('../models/progressModel');
+
 const Course = require('../models/Course');
 // const User = require('../models/User');
 
@@ -34,10 +36,17 @@ exports.enrollStudent = async (req, res) => {
       student: studentId,
     });
 
+    // Create new progress record
+    const newProgress = await Progress.create({
+      student: studentId,
+      course: courseId,
+    });
+
     res.status(201).json({
       status: 'success',
       data: {
         enrollment: newEnrollment,
+        progress: newProgress, // Include the new progress data in the response
       },
     });
   } catch (err) {

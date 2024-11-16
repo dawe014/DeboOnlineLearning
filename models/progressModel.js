@@ -5,23 +5,19 @@ const progressSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: [true, 'Progress must belong to a student'],
-    unique: true,
   },
   course: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Course',
     required: [true, 'Progress must belong to a course'],
-    unique: true,
   },
   currentLesson: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Lesson',
-    required: [true, 'Progress must track the current lesson'],
   },
   currentContent: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'CourseContent',
-    required: [true, 'Progress must track the current course content'],
   },
   contentCompleted: {
     type: Boolean,

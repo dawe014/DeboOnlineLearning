@@ -9,7 +9,7 @@ const lessonSchema = new mongoose.Schema({
   contents: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'CourseContent', // Reference to CourseContent schema
+      ref: 'lessonContent', // Reference to CourseContent schema
     },
   ],
 });

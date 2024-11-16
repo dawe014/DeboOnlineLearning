@@ -1,64 +1,98 @@
+import { useEffect, useState } from 'react';
 import { Sidebar } from 'flowbite-react';
-import {
-  
-} from 'react-icons/hi';
-// import { useState } from 'react';
-// import { MdMenu } from 'react-icons/md';
+import apiClient from '../../api/apiClient';
+import DisplayContent from './DisplayContent'; // Import the DisplayContent component
 
 export default function LessonsNav() {
-  // const [isOpen, setIsOpen] = useState(true);
-  // const toggleMenu = () => {
-  //   setIsOpen(!isOpen);
-  // };
+  const [course, setCourse] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedContent, setSelectedContent] = useState(null);
+
+  useEffect(() => {
+    const fetchCourseData = async () => {
+      try {
+        const response = await apiClient.get(
+          '/api/v1/courses/6732f520fa7cb6d36744b277',
+        ); // Replace with your API endpoint
+        setCourse(response.data.data.course);
+      } catch (err) {
+        setError('Failed to load course data.');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourseData();
+  }, []);
+
+  const handleContentSelect = (content) => {
+    setSelectedContent(content);
+  };
+
+  const handleNavigate = (direction) => {
+    if (!selectedContent || !course) return;
+
+    const currentLesson = course.lessons.find((lesson) =>
+      lesson.contents.some((content) => content.id === selectedContent.id),
+    );
+
+    if (currentLesson) {
+      const currentIndex = currentLesson.contents.findIndex(
+        (content) => content.id === selectedContent.id,
+      );
+
+      if (direction === 'previous' && currentIndex > 0) {
+        setSelectedContent(currentLesson.contents[currentIndex - 1]);
+      }
+
+      if (
+        direction === 'next' &&
+        currentIndex < currentLesson.contents.length - 1
+      ) {
+        setSelectedContent(currentLesson.contents[currentIndex + 1]);
+      }
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="flex min-h-screen">
-     
-        <Sidebar
-          aria-label="Sidebar with multi-level dropdown example"
-          className="sticky top-12 z-10 w-64 h-screen" // Ensure it takes full height and is sticky
-        >
-          <Sidebar.Items>
-            <Sidebar.ItemGroup>
-              
-              <Sidebar.Collapse  label="Lesson 1">
-                <Sidebar.Item href="1">Sub content 1</Sidebar.Item>
-                <Sidebar.Item href="2">Sub content 2</Sidebar.Item>
-                <Sidebar.Item href="3">Sub content 3</Sidebar.Item>
-                <Sidebar.Item href="4">Sub content 4</Sidebar.Item>
+      {/* Sidebar */}
+      <Sidebar
+        aria-label="Sidebar with multi-level dropdown example"
+        className="sticky top-12 z-10 w-80 h-screen"
+      >
+        <Sidebar.Items>
+          <Sidebar.ItemGroup>
+            {course.lessons.map((lesson) => (
+              <Sidebar.Collapse
+                key={lesson.lessonTitle}
+                label={lesson.lessonTitle}
+              >
+                {lesson.contents.map((content) => (
+                  <Sidebar.Item
+                    key={content.id}
+                    className="ms-4 text-start text-ellipsis overflow-hidden whitespace-nowrap"
+                    onClick={() => handleContentSelect(content)}
+                    title={content.contentTitle} // Tooltip for full title
+                  >
+                    {content.contentTitle}
+                  </Sidebar.Item>
+                ))}
               </Sidebar.Collapse>
-              <Sidebar.Collapse  label="Lesson 2">
-                <Sidebar.Item href="#">Sub content 1</Sidebar.Item>
-                <Sidebar.Item href="#">Sub content 2</Sidebar.Item>
-                <Sidebar.Item href="#">Sub content 3</Sidebar.Item>
-                <Sidebar.Item href="#">Sub content 4</Sidebar.Item>
-              </Sidebar.Collapse>
-              <Sidebar.Collapse  label="Lesson 3">
-                <Sidebar.Item href="#">Sub content 1</Sidebar.Item>
-                <Sidebar.Item href="#">Sub content 2</Sidebar.Item>
-                <Sidebar.Item href="#">Sub content 3</Sidebar.Item>
-                <Sidebar.Item href="#">Sub content 4</Sidebar.Item>
-              </Sidebar.Collapse>
-              <Sidebar.Collapse  label="Lesson 4">
-                <Sidebar.Item href="#">Sub content 1</Sidebar.Item>
-                <Sidebar.Item href="#">Sub content 2</Sidebar.Item>
-                <Sidebar.Item href="#">Sub content 3</Sidebar.Item>
-                <Sidebar.Item href="#">Sub content 4</Sidebar.Item>
-              </Sidebar.Collapse>
-              <Sidebar.Collapse  label="Lesson 5">
-                <Sidebar.Item href="#">Sub content 1</Sidebar.Item>
-                <Sidebar.Item href="#">Sub content 2</Sidebar.Item>
-                <Sidebar.Item href="#">Sub content 3</Sidebar.Item>
-                <Sidebar.Item href="#">Sub content 4</Sidebar.Item>
-              </Sidebar.Collapse>
-              
-            </Sidebar.ItemGroup>
-          </Sidebar.Items>
-        </Sidebar>
-      
+            ))}
+          </Sidebar.ItemGroup>
+        </Sidebar.Items>
+      </Sidebar>
 
-      
-    
+      {/* Main Content Area */}
+      <div className="flex-1 bg-gray-100">
+        <DisplayContent content={selectedContent} onNavigate={handleNavigate} />
+      </div>
     </div>
   );
 }

@@ -93,23 +93,34 @@ exports.updateContent = async (req, res) => {
 // Delete content
 exports.deleteContent = async (req, res) => {
   try {
+    // Step 1: Find the content by ID
     const contentown = await LessonContent.findById(req.params.id);
     if (!contentown) {
       return res.status(404).json({ message: 'Content not found' });
     }
 
+    // Step 2: Authorization check
     if (req.user.role !== 'instructor' && req.user.role !== 'admin') {
       return res.status(403).json({
-        message: 'Not authorized to update this content',
+        message: 'Not authorized to delete this content',
       });
     }
 
+    // Step 3: Delete the content
     const content = await LessonContent.findByIdAndDelete(req.params.id);
     if (!content) {
       return res
         .status(404)
         .json({ status: 'fail', message: 'Content not found' });
     }
+
+    // Step 4: Remove the content reference from the associated lesson
+    await Lesson.updateOne(
+      { contents: req.params.id }, // Find the lesson that has this content ID
+      { $pull: { contents: req.params.id } }, // Remove the content ID from the contents array
+    );
+
+    // Step 5: Send success response
     res.status(204).json({ status: 'success', data: null });
   } catch (err) {
     res.status(400).json({ status: 'fail', message: err.message });

@@ -1,4 +1,6 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { IoIosWarning } from 'react-icons/io';
+
 import {
   Table,
   TableBody,
@@ -6,26 +8,48 @@ import {
   TableHead,
   TableHeadCell,
   TableRow,
+  Button,
+  Modal,
 } from 'flowbite-react';
 import { NavLink } from 'react-router-dom';
 import apiClient from '../api/apiClient'; // Assuming the Axios instance is defined here
 
 export default function ManageCourses() {
   const [courses, setCourses] = useState([]);
+  const [showModal, setShowModal] = useState(false); // For showing the modal
+  const [courseToDelete, setCourseToDelete] = useState(null); // Store the course to be deleted
 
   // Fetch courses from the API when the component mounts
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await apiClient.get('/api/v1/courses');
-        setCourses(response.data.data.courses); // Assuming response.data contains the list of courses
-      } catch (error) {
-        console.error('Error fetching courses:', error);
-      }
-    };
+  const fetchCourses = async () => {
+    try {
+      const response = await apiClient.get('/api/v1/courses');
+      setCourses(response.data.data.courses); // Assuming response.data contains the list of courses
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+    }
+  };
+  console.log(courses);
+  
 
+  useEffect(() => {
     fetchCourses();
   }, []);
+
+  // Handle delete action
+  const confirmDelete = (courseId) => {
+    setCourseToDelete(courseId);
+    setShowModal(true); // Show modal when user wants to delete
+  };
+
+  const handleDelete = async () => {
+    try {
+      await apiClient.delete(`/api/v1/courses/${courseToDelete}`);
+      fetchCourses(); // Refresh the course list
+      setShowModal(false); // Close modal
+    } catch (error) {
+      console.error('Error deleting course:', error);
+    }
+  };
 
   return (
     <div>
@@ -57,21 +81,21 @@ export default function ManageCourses() {
                   <TableCell>{course.status}</TableCell>
                   <TableCell className="flex space-x-4">
                     <NavLink
-                      to={`/edit-course/${course.id}`}
+                      to={`/edit-course/${course._id}`}
                       className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
                     >
                       Edit
                     </NavLink>
                     <NavLink
-                      to={`/dashboardadmin/course/${course.id}`}
+                      to={`/dashboardadmin/course/${course._id}`}
                       className="font-medium text-yellow-600 hover:underline dark:text-yellow-500"
                     >
                       Lessons
                     </NavLink>
                     <NavLink
                       to="#"
-                      className="font-medium text-cyan-600 hover:underline dark:text-red-500"
-                      onClick={() => handleDelete(course._id)} // Handle delete if needed
+                      className="font-medium text-red-600 hover:underline dark:text-red-500"
+                      onClick={() => confirmDelete(course._id)} // Trigger modal confirmation
                     >
                       Delete
                     </NavLink>
@@ -88,17 +112,33 @@ export default function ManageCourses() {
           </TableBody>
         </Table>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        show={showModal}
+        size="md"
+        popup
+        onClose={() => setShowModal(false)}
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <IoIosWarning size={48} className=' w-full text-red-500' />
+
+            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+              Are you sure you want to delete this course?
+            </h3>
+            <div className="flex justify-center gap-4">
+              <Button color="failure" onClick={handleDelete}>
+                {`Yes, I'm sure`}
+              </Button>
+              <Button color="gray" onClick={() => setShowModal(false)}>
+                No, cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
-}
-
-async function handleDelete(courseId) {
-  // You can implement the delete functionality here
-  try {
-        const response = await apiClient.delete(`/api/v1/courses/${courseId}`);
-        console.log(response)
-      } catch (error) {
-        console.error('Error fetching courses:', error);
-      }
- 
 }

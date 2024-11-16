@@ -46,19 +46,21 @@ function Dashboard() {
           <FaBookReader size={26} className="text-yellow-500" />
           <h1 className="text-md md:text-3xl font-extrabold">Course Name</h1>
         </div>
-        <div className="flex justify-start space-x-4 items-center">
-          <h1 className="text-md md:text-3xl font-extrabold">Progress Bar</h1>
-          <Progress
-            className="w-full border"
-            aria-valuemax={100}
-            aria-valuemin={0}
-            aria-valuenow={50}
-          />
+        <div className="flex justify-start space-x-4 items-center ">
+          <Progress className='w-48'
+      progress={45}
+      progressLabelPosition="inside"
+      textLabel="Progress"
+      textLabelPosition="outside"
+      size="lg"
+      labelProgress
+      labelText
+    />
         </div>
       </div>
 
       <div className="flex w-full mt-4 space-x-2">
-        <div className="hidden lg:block  sticky top-12 z-10 w-64 max-h-screen">
+        <div className="hidden lg:block  sticky top-12 z-10 w-80 max-h-screen">
           {' '}
           {/* Sidebar for larger screens */}
           <LessonsNav />

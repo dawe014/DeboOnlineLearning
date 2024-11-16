@@ -12,7 +12,7 @@ export default function BackButton() {
   };
 
   return (
-    <Button onClick={handleBack} className=" mt-4 text-white  rounded">
+    <Button onClick={handleBack} className=" mt-4 text-white  rounded w-max">
       <IoMdArrowRoundBack size={20} />
     </Button>
   );

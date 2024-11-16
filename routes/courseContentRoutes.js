@@ -22,7 +22,10 @@ router
     protect,
     roleCheck('admin', 'instructor'),
     courseContentController.updateContent,
-  ) // Update content
+  ); // Update content
+
+router
+  .route('/:lessonId/:id')
   .delete(
     protect,
     roleCheck('admin', 'instructor'),

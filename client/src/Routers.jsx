@@ -68,10 +68,19 @@ const AppRoutes = () => {
           <Route index element={<Statistic />} />
           <Route path="manage-courses" element={<ManageCourses />} />
           <Route path="manage-courses/edit-course" element={<EditCourse />} />
-          <Route path="course" element={<ManageLessons />} />
-          <Route path="course/content" element={<ManageContents />} />
+          <Route path="course/:id" element={<ManageLessons />} />
+          <Route
+            path="course/lessons/:lessonId/contents"
+            element={<ManageContents />}
+          >
+            <Route path="add-content" element={<AddContent />} />
+            <Route path="edit-content/:id" element={<EditContent />} />
+          </Route>
           <Route path="course/content/add-content" element={<AddContent />} />
-          <Route path="course/content/edit-content" element={<EditContent />} />
+          <Route
+            path="contents/edit-content/:contentId"
+            element={<EditContent />}
+          />
 
           <Route path="create-course" element={<CreateCourse />} />
           <Route path="manage-users" element={<ManageUsers />} />
