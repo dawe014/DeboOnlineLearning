@@ -5,6 +5,7 @@ import { Card } from 'flowbite-react';
 import apiClient from '../../api/apiClient';
 import { jwtDecode } from 'jwt-decode';
 import { Spinner } from 'flowbite-react';
+import { NavLink } from 'react-router-dom';
 
 export default function MyCourse() {
   const [courses, setCourses] = useState([]);
@@ -23,31 +24,28 @@ export default function MyCourse() {
           `/api/v1/enrollments/myCurriculum`,
         );
         const enrollments = response.data.data.enrollments;
-console.log('errolement', enrollments)
+        console.log('errolement', enrollments);
         // Fetch progress for each course
-        
+
         const progressPromises = enrollments.map(async (enrollment) => {
           console.log('studentid course id', studentId, enrollment.course._id);
           const progressResponse = await apiClient.get(
             `/api/v1/progress/${studentId}/course/${enrollment.course._id}`,
           );
-          console.log(
-            'progress response',
-            progressResponse.data.data,
-          );
+          console.log('progress response', progressResponse.data.data);
           return {
             ...enrollment,
             progress: progressResponse.data.data.overallProgress, // Adjust based on your API response
           };
         });
-console.log('progress promise', progressPromises);
+        console.log('progress promise', progressPromises);
         try {
-          console.log('try')
+          console.log('try');
           const coursesWithProgress = await Promise.all(progressPromises);
           console.log('progress is', coursesWithProgress);
           setCourses(coursesWithProgress);
         } catch (error) {
-          console.log('catch')
+          console.log('catch');
           console.error('Error resolving progress promises:', error);
         }
       } catch (err) {
@@ -59,20 +57,21 @@ console.log('progress promise', progressPromises);
 
     fetchCourses();
   }, [studentId]);
-console.log('courses', courses)
-  if (loading) return (
-    <div className="flex flex-wrap items-center gap-2">
-     
-      <Spinner aria-label="Extra large spinner example" size="xl" />
-    </div>
-  );
-console.log(error)
+  console.log('courses', courses);
+  if (loading)
+    return (
+      <div className="flex flex-wrap items-center gap-2">
+        <Spinner aria-label="Extra large spinner example" size="xl" />
+      </div>
+    );
+  console.log(error);
   return (
     <div className="flex flex-col space-y-2 font-montserrat">
       <h1 className="font-semibold text-2xl mb-4">My Courses</h1>
       {courses.map((course) => (
         <Course
           key={course._id}
+          id={course.course._id}
           name={course.course.title} // Adjust based on your data structure
           progress={course.progress || 0} // Default to 0 if progress is not available
           status={course.completed ? 'Completed' : 'In Progress'} // Adjust based on your data structure
@@ -81,7 +80,7 @@ console.log(error)
     </div>
   );
 }
-function Course({ name, progress, status }) {
+function Course({ name, progress, status, id }) {
   return (
     <div className="mb-16">
       <Card className="w-full md:w-2/3 lg:w-1/2 px-4 py-2">
@@ -97,13 +96,17 @@ function Course({ name, progress, status }) {
             <p className="font-bold">{status}</p>
             {/* Conditionally render the button */}
             {progress > 0 ? (
-              <button className="font-montserrat font-bold border hover:text-white hover:bg-yellow-500 text-yellow-500 px-3 py-2 border-yellow-300 transition-all duration-200">
-                Resume
-              </button>
+              <NavLink to={`/dashboard/courses/${id}`}>
+                <button className="font-montserrat font-bold border hover:text-white hover:bg-yellow-500 text-yellow-500 px-3 py-2 border-yellow-300 transition-all duration-200">
+                  Resume
+                </button>
+              </NavLink>
             ) : (
-              <button className="font-montserrat font-bold border hover:text-white  text-green-500 px-3 py-2 border-green-300 transition-all duration-200">
-                Start
-              </button>
+              <NavLink to={`/dashboard/courses/${id}`}>
+                <button className="font-montserrat font-bold border hover:text-white  text-green-500 px-3 py-2 border-green-300 transition-all duration-200">
+                  Start
+                </button>
+              </NavLink>
             )}
           </div>
         </div>

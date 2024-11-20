@@ -4,6 +4,8 @@ import { Button, Label, Select, TextInput, Modal } from 'flowbite-react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './custom-quill.css'; // Your custom styles
+
+import AddQuestion from './AddQuestion';
 import apiClient from '../api/apiClient'; // Import your API client
 import { useParams, useOutletContext, useNavigate } from 'react-router-dom';
 
@@ -211,14 +213,15 @@ export default function AddContent() {
             value={content}
           />
         </div>
-
+        <AddQuestion />
         <Button
           type="submit"
           className="dark:text-yellow-400 font-bold hover:text-white w-max mb-4"
         >
           Publish Content
         </Button>
-        <Button color='red'
+        <Button
+          color="red"
           className="bg-red-400 hover:bg-red-500 mt-4 w-max"
           onClick={handleAddContentClose}
         >
