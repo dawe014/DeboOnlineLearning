@@ -1,5 +1,5 @@
 import { FaBookReader } from 'react-icons/fa';
-import { Outlet, useParams } from 'react-router-dom';
+import { Outlet, useParams, useNavigate, NavLink } from 'react-router-dom';
 import Header from '../../components/Header';
 import { Progress } from 'flowbite-react';
 import LessonsNav from './LessonsNav';
@@ -21,23 +21,38 @@ function Dashboard() {
   const [isOpen, setIsOpen] = useState(false); // Sidebar state
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [myProgress, setMyProgress] = useState(0);
   const [error, setError] = useState(null);
   const [selectedContent, setSelectedContent] = useState(null);
-  const { courseId } = useParams()
-  console.log(courseId)
+  const { courseId, id } = useParams(); // Capture both courseId and id from the route
+  const navigate = useNavigate();
+  console.log(courseId);
   useEffect(() => {
     const fetchCourseData = async () => {
       try {
-        console.log('course')
-        const response = await apiClient.get(
-          `/api/v1/courses/${courseId}`,
-        ); // Replace with your API endpoint
-        console.log('response', response)
+        const response = await apiClient.get(`/api/v1/courses/${courseId}`);
         setCourse(response.data.data.course);
-        // Initialize with the first content
-        const firstLesson = response.data.data.course.lessons[0];
-        if (firstLesson && firstLesson.contents.length > 0) {
-          setSelectedContent(firstLesson.contents[0]);
+
+        
+        const allContents = response.data.data.course.lessons.flatMap(
+          (lesson) => lesson.contents,
+        );
+
+        let contentToSelect = null;
+
+        // If `id` exists in the URL, find the matching content
+        if (id) {
+          contentToSelect = allContents.find((content) => content._id === id);
+        }
+
+        // If `id` is not provided or doesn't match, select the first content as fallback
+        if (!contentToSelect && allContents.length > 0) {
+          contentToSelect = allContents[0];
+          navigate(`lesson/${contentToSelect._id}`); // Sync the URL
+        }
+
+        if (contentToSelect) {
+          setSelectedContent(contentToSelect);
         }
       } catch (err) {
         setError('Failed to load course data.');
@@ -47,14 +62,29 @@ function Dashboard() {
       }
     };
 
+    const fetchProgress = async () => {
+      try {
+        const progressResponse = await apiClient.get(
+          `/api/v1/progress/course/${courseId}`,
+        );
+        console.log('progress calculate', progressResponse.data.data);
+        setMyProgress(progressResponse.data.data.overallProgress);
+      } catch (err) {
+        setError('Failed to load course progress.');
+        console.error(err);
+      }
+    };
+
+    fetchProgress();
     fetchCourseData();
-  }, [courseId]);
+  }, [courseId, id, navigate]);
 
   const handleContentSelect = (content) => {
     setSelectedContent(content);
   };
 
-  const handleNavigate = (direction) => {
+  // import axios from 'axios';
+  const handleNavigate = async (direction) => {
     if (!selectedContent || !course) return;
 
     // Find the current lesson and content
@@ -62,41 +92,65 @@ function Dashboard() {
       lesson.contents.some((content) => content._id === selectedContent._id),
     );
 
-    if (currentLessonIndex === -1) return; // Content not found in any lesson
+    if (currentLessonIndex === -1) return;
 
     const currentLesson = course.lessons[currentLessonIndex];
-    const currentIndex = currentLesson.contents.findIndex(
-      (content) => content._id === selectedContent._id,
+    const currentIndex = currentLesson.contents.findIndex((content) =>
+     content._id === selectedContent._id,
     );
 
-    if (direction === 'previous') {
-      // If it's the first content of the current lesson, go to the last content of the previous lesson
-      if (currentIndex === 0 && currentLessonIndex > 0) {
-        const previousLesson = course.lessons[currentLessonIndex - 1];
-        setSelectedContent(
-          previousLesson.contents[previousLesson.contents.length - 1],
-        );
-      } else if (currentIndex > 0) {
-        // Navigate to the previous content in the same lesson
-        setSelectedContent(currentLesson.contents[currentIndex - 1]);
-      }
-    }
+    let newContent = null;
 
     if (direction === 'next') {
-      // If it's the last content of the current lesson, go to the first content of the next lesson
       if (
         currentIndex === currentLesson.contents.length - 1 &&
         currentLessonIndex < course.lessons.length - 1
       ) {
+        // Navigate to the first content of the next lesson
         const nextLesson = course.lessons[currentLessonIndex + 1];
-        setSelectedContent(nextLesson.contents[0]);
+        newContent = nextLesson.contents[0];
       } else if (currentIndex < currentLesson.contents.length - 1) {
         // Navigate to the next content in the same lesson
-        setSelectedContent(currentLesson.contents[currentIndex + 1]);
+
+        newContent = currentLesson.contents[currentIndex + 1];
+      } else if (
+        currentIndex === currentLesson.contents.length - 1 &&
+        currentLessonIndex === course.lessons.length - 1
+      ) {
+        newContent = currentLesson.contents[currentIndex];
+      }
+    } else if (direction === 'previous') {
+      if (currentIndex > 0) {
+        newContent = currentLesson.contents[currentIndex - 1];
+      } else if (currentLessonIndex > 0) {
+        const previousLesson = course.lessons[currentLessonIndex - 1];
+        newContent =
+          previousLesson.contents[previousLesson.contents.length - 1];
+      }
+    }
+
+    if (newContent) {
+      try {
+        // Update progress in the backend
+        const data = await apiClient.patch('/api/v1/progress/update', {
+          courseId: course._id,
+          contentId: newContent._id,
+          lessonId: currentLesson._id,
+          completedContentId: selectedContent._id, // Include the current content
+        });
+
+        console.log('Progress updated successfully', data);
+
+        // Update selected content
+        setSelectedContent(newContent);
+
+        // Update the route with the new content ID
+        navigate(`lesson/${newContent._id}`);
+      } catch (error) {
+        console.error('Error updating progress:', error);
       }
     }
   };
-
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -112,26 +166,32 @@ function Dashboard() {
           <IoClose
             size={24}
             onClick={toggleMenu}
-            className="cursor-pointer lg:hidden text-2xl fixed top-16 left-4 z-50"
+            className="cursor-pointer lg:hidden text-2xl fixed top-16  bg-slate-900  left-4 z-50"
           />
         ) : (
           <HiMenu
             size={24}
             onClick={toggleMenu}
-            className="cursor-pointer lg:hidden text-2xl fixed top-16 left-4 z-50"
+            className="cursor-pointer bg-slate-900  lg:hidden text-2xl fixed top-16 left-4 z-50"
           />
         )}
       </div>
+      <NavLink
+        to="/dashboard/mycourse"
+        className="px-4 py-2 border hover:text-white hover:bg-yellow-500 md:px-8 border-yellow-500 rounded-lg text-yellow-500 font-bold transition-all duration-200"
+      >
+        My Course
+      </NavLink>
 
-      <div className="flex flex-col lg:flex-row lg:space-x-4 sm:space-y-2 items-start lg:justify-between">
+      <div className="flex flex-col lg:flex-row lg:space-x-4 sm:space-y-2 mt-4 items-start lg:justify-between">
         <div className="flex justify-start space-x-4 items-center">
           <FaBookReader size={26} className="text-yellow-500" />
           <h1 className="text-md md:text-3xl font-extrabold">{course.title}</h1>
         </div>
         <div className="flex justify-start space-x-4 items-center">
           <Progress
-            className="w-48"
-            progress={45}
+            className="w-80 text-sm"
+            progress={myProgress}
             progressLabelPosition="inside"
             textLabel="Progress"
             textLabelPosition="outside"
@@ -147,6 +207,7 @@ function Dashboard() {
           <LessonsNav
             course={course}
             handleContentSelect={handleContentSelect}
+            // progress={progress}
           />
         </div>
         <div className="flex-1">

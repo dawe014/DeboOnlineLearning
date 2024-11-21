@@ -6,6 +6,11 @@ import { useOutletContext } from 'react-router-dom';
 export default function DisplayContent() {
   const { selectedContent, handleNavigate } = useOutletContext();
   console.log('content', selectedContent);
+  //  const { id } = useParams();
+
+  //  if (!selectedContent || selectedContent._id !== id) {
+  //    return <div>Loading content...</div>;
+  //  }
   if (!selectedContent) {
     return (
       <div className="p-4 text-gray-500">Select a lesson content to view.</div>

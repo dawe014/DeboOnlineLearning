@@ -33,9 +33,13 @@ export default function MyCourse() {
             `/api/v1/progress/${studentId}/course/${enrollment.course._id}`,
           );
           console.log('progress response', progressResponse.data.data);
+          const curProgress = await apiClient.get(
+            `/api/v1/progress/course/${enrollment.course._id}/progress`,
+          );
           return {
             ...enrollment,
             progress: progressResponse.data.data.overallProgress, // Adjust based on your API response
+            currentContent: curProgress.data.data[0].currentContent,
           };
         });
         console.log('progress promise', progressPromises);
@@ -74,13 +78,14 @@ export default function MyCourse() {
           id={course.course._id}
           name={course.course.title} // Adjust based on your data structure
           progress={course.progress || 0} // Default to 0 if progress is not available
+          currentContent={course.currentContent || 0}
           status={course.completed ? 'Completed' : 'In Progress'} // Adjust based on your data structure
         />
       ))}
     </div>
   );
 }
-function Course({ name, progress, status, id }) {
+function Course({ name, progress, status, id, currentContent }) {
   return (
     <div className="mb-16">
       <Card className="w-full md:w-2/3 lg:w-1/2 px-4 py-2">
@@ -96,7 +101,7 @@ function Course({ name, progress, status, id }) {
             <p className="font-bold">{status}</p>
             {/* Conditionally render the button */}
             {progress > 0 ? (
-              <NavLink to={`/dashboard/courses/${id}`}>
+              <NavLink to={`/dashboard/courses/${id}/lesson/${currentContent}`}>
                 <button className="font-montserrat font-bold border hover:text-white hover:bg-yellow-500 text-yellow-500 px-3 py-2 border-yellow-300 transition-all duration-200">
                   Resume
                 </button>

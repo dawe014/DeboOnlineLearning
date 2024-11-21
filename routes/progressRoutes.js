@@ -14,6 +14,12 @@ router
   .route('/:studentId/course/:courseId/progress')
   .get(protect, progressController.getProgress);
 router
+  .route('/course/:courseId/progress')
+  .get(protect, progressController.myProgress);
+router
+  .route('/course/:courseId')
+  .get(protect, progressController.calculateMyProgress);
+router
   .route('/:studentId/course/:courseId')
   .get(protect, progressController.calculateProgress);
 
