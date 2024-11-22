@@ -127,8 +127,14 @@ export default function ManageContents() {
           </Button>
         </NavLink>
       )}
+      
       {/* Passing the triggerReload function as context for the Outlet */}
-      <Outlet context={{ triggerReload, handleAddContentClose }} />
+      <Outlet
+        context={{
+          triggerReload,
+          handleAddContentClose,
+        }}
+      />
     </div>
   );
 }

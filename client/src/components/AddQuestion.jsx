@@ -1,57 +1,23 @@
-import  { useState } from 'react';
+/* eslint-disable react/prop-types */
+
+// import { useState } from 'react';
 import { Button, TextInput, Textarea } from 'flowbite-react';
 
-const AddQuestion = () => {
-  const [title, setTitle] = useState('');
-  const [questions, setQuestions] = useState([{ questionText: '', options: [{ optionText: '', isCorrect: false }] }]);
-  const [passingScore, setPassingScore] = useState(50);
-  const [certificationQuiz, setCertificationQuiz] = useState(false);
-
-  const handleQuestionChange = (index, event) => {
-    const newQuestions = [...questions];
-    newQuestions[index].questionText = event.target.value;
-    setQuestions(newQuestions);
-  };
-
-  const handleOptionChange = (questionIndex, optionIndex, event) => {
-    const newQuestions = [...questions];
-    newQuestions[questionIndex].options[optionIndex].optionText = event.target.value;
-    setQuestions(newQuestions);
-  };
-
-  const addQuestion = () => {
-    setQuestions([...questions, { questionText: '', options: [{ optionText: '', isCorrect: false }] }]);
-  };
-
-  const addOption = (questionIndex) => {
-    const newQuestions = [...questions];
-    newQuestions[questionIndex].options.push({ optionText: '', isCorrect: false });
-    setQuestions(newQuestions);
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const quizData = { title, questions, passingScore, certificationQuiz };
-
-    try {
-      const response = await fetch('/api/quizzes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(quizData),
-      });
-
-      if (response.ok) {
-        const newQuiz = await response.json();
-        console.log('Quiz created:', newQuiz);
-        // Optionally reset the form
-      } else {
-        console.error('Failed to create quiz');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
-
+const AddQuestion = ({
+  handleSubmit,
+  title,
+  setTitle,
+  questions,
+  handleQuestionChange,
+  addQuestion,
+  passingScore,
+  setPassingScore,
+  certificationQuiz,
+  setCertificationQuiz,
+  handleOptionChange,
+  addOption,
+  setQuestions,
+}) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <TextInput
@@ -62,19 +28,25 @@ const AddQuestion = () => {
         required
       />
       {questions.map((question, questionIndex) => (
-        <div key={questionIndex} className="border p-4 rounded">
+        <div key={questionIndex} className="p-4 mb-4 rounded">
           <Textarea
+            className="p-2"
             value={question.questionText}
             onChange={(e) => handleQuestionChange(questionIndex, e)}
             placeholder="Question Text"
             required
           />
           {question.options.map((option, optionIndex) => (
-            <div key={optionIndex} className="flex items-center space-x-2">
+            <div
+              key={optionIndex}
+              className="flex mt-4 ms-4 items-center space-x-2"
+            >
               <TextInput
                 type="text"
                 value={option.optionText}
-                onChange={(e) => handleOptionChange(questionIndex, optionIndex, e)}
+                onChange={(e) =>
+                  handleOptionChange(questionIndex, optionIndex, e)
+                }
                 placeholder="Option Text"
                 required
               />
@@ -83,35 +55,45 @@ const AddQuestion = () => {
                 checked={option.isCorrect}
                 onChange={() => {
                   const newQuestions = [...questions];
-                  newQuestions[questionIndex].options[optionIndex].isCorrect = !option.isCorrect;
+                  newQuestions[questionIndex].options[optionIndex].isCorrect =
+                    !option.isCorrect;
                   setQuestions(newQuestions);
                 }}
               />
               <label>Correct</label>
             </div>
           ))}
-          <Button type="button" onClick={() => addOption(questionIndex)}>Add Option</Button>
+          <Button
+            type="button"
+            className="mt-2"
+            onClick={() => addOption(questionIndex)}
+          >
+            Add Option
+          </Button>
         </div>
       ))}
-      <Button type="button" onClick={addQuestion}>Add Question</Button>
+      <Button type="button" onClick={addQuestion}>
+        Add Question
+      </Button>
       <TextInput
+        className="max-w-sm"
         type="number"
         value={passingScore}
-        onChange={(e) => setPassingScore(e.target.value)}
+        onChange={(e) => setPassingScore(Number(e.target.value))}
         placeholder="Passing Score"
         required
       />
-      <label>
+      <div className="max-w-sm flex justify-start space-x-4 items-center">
+        <label>Certification Quiz</label>
         <TextInput
+          className="max-w-sm"
           type="checkbox"
           checked={certificationQuiz}
           onChange={(e) => setCertificationQuiz(e.target.checked)}
         />
-        Certification Quiz
-      </label>
+      </div>
       <Button type="submit">Submit Quiz</Button>
     </form>
   );
 };
-
 export default AddQuestion;

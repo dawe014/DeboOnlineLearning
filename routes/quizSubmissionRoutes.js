@@ -1,5 +1,5 @@
 const express = require('express');
-const quizSubmissionController = require('../controllers/quizSubmissionController');
+const quizSubmissionController = require('../controllers/quizController');
 const protect = require('../middlewares/authMiddleware'); // Your protect middleware
 
 const router = express.Router();

@@ -24,26 +24,10 @@ import DisplayContent from './pages/StudentDashboard/DisplayContent';
 // import SignupPage from './pages/SignupPage';
 
 const AppRoutes = () => {
-  //  const { user } = useContext(UserContext); // Access the user context
-
-  // const renderDashboard = () => {
-  //   if (user) {
-  //     switch (user.role) {
-  //       case 'student':
-  //         return <StudentDashboard />;
-  //       case 'instructor':
-  //         return <InstructorDashboard />;
-  //       case 'admin':
-  //         return <AdminDashboard />;
-  //       default:
-  //         return <Navigate to="/" />; // Redirect if no valid role
-  //     }
-  //   }
   return (
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        {/* <Route path="/course/:id" element={<CoursePage />} /> */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/dashboard" element={<StudentDashboard />}>
@@ -60,6 +44,7 @@ const AppRoutes = () => {
           <Route path="course" element={<ManageLessons />} />
           <Route path="course/content" element={<ManageContents />} />
           <Route path="course/content/add-content" element={<AddContent />} />
+         
 
           <Route path="create-course" element={<CreateCourse />} />
           <Route path="enrolled-students" element={<EnrolledStudents />} />

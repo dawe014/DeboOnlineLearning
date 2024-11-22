@@ -9,7 +9,7 @@ const router = express.Router();
 router.post(
   '/:id/quiz',
   protect,
-  roleCheck(['admin', 'instructor']),
+  roleCheck('admin', 'instructor'),
   quizController.createQuiz,
 ); // Create a new quiz
 router.get('/lesson/:lessonId', protect, quizController.getQuizzesByLesson); // Get quizzes for a lesson
@@ -17,13 +17,13 @@ router.get('/:id', protect, quizController.getQuiz); // Get a quiz by ID
 router.patch(
   '/:id',
   protect,
-  roleCheck(['admin', 'instructor']),
+  roleCheck('admin', 'instructor'),
   quizController.updateQuiz,
 ); // Update a quiz
 router.delete(
   '/:id',
   protect,
-  roleCheck(['admin', 'instructor']),
+  roleCheck('admin', 'instructor'),
   quizController.deleteQuiz,
 ); // Delete a quiz
 

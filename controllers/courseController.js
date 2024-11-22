@@ -21,6 +21,9 @@ exports.getCourse = async (req, res) => {
       path: 'lessons',
       populate: {
         path: 'contents',
+        populate: {
+          path: 'quiz',
+        },
       },
     });
 

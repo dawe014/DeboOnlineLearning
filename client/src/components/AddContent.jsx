@@ -1,11 +1,15 @@
-import { useState, useEffect } from 'react';
-import { Button, Label, Select, TextInput, Modal } from 'flowbite-react';
-// import BackButton from './BackButton';
+import { useState } from 'react';
+import {
+  Button,
+  Label,
+  Select,
+  TextInput,
+  Modal,
+  Textarea,
+} from 'flowbite-react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './custom-quill.css'; // Your custom styles
-
-import AddQuestion from './AddQuestion';
 import apiClient from '../api/apiClient'; // Import your API client
 import { useParams, useOutletContext, useNavigate } from 'react-router-dom';
 
@@ -13,103 +17,144 @@ export default function AddContent() {
   const [title, setTitle] = useState('');
   const [type, setType] = useState('');
   const [url, setUrl] = useState('');
-  const [quizId, setQuizId] = useState('');
   const [content, setContent] = useState('');
-  const [successMessage, setSuccessMessage] = useState(''); // Success message state
-  const [errorMessage, setErrorMessage] = useState(''); // Error message state
-  const [reload, setReload] = useState(false); // Reload state to trigger rerender
-  const [showModal, setShowModal] = useState(false); // Modal visibility state
+  const [error, setError] = useState('')
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
-  const { triggerReload, handleAddContentClose } = useOutletContext(); // Access the reload function from Outlet context
+  // Quiz State
+  const [questions, setQuestions] = useState([
+    { questionText: '', options: [{ optionText: '', isCorrect: false }] },
+  ]);
+  const [passingScore, setPassingScore] = useState(50);
+  const [certificationQuiz, setCertificationQuiz] = useState(false);
+
+  const { lessonId } = useParams();
+  const { triggerReload, handleAddContentClose } = useOutletContext();
   const navigate = useNavigate();
 
-  const { lessonId } = useParams(); // Get the lesson ID from the URL parameters
+  const handleQuestionChange = (index, event) => {
+    const newQuestions = [...questions];
+    newQuestions[index].questionText = event.target.value;
+    setQuestions(newQuestions);
+  };
+
+  const handleOptionChange = (questionIndex, optionIndex, event) => {
+    const newQuestions = [...questions];
+    newQuestions[questionIndex].options[optionIndex].optionText =
+      event.target.value;
+    setQuestions(newQuestions);
+  };
+
+  const addQuestion = () => {
+    setQuestions([
+      ...questions,
+      { questionText: '', options: [{ optionText: '', isCorrect: false }] },
+    ]);
+  };
+
+  const addOption = (questionIndex) => {
+    const newQuestions = [...questions];
+    newQuestions[questionIndex].options.push({
+      optionText: '',
+      isCorrect: false,
+    });
+    setQuestions(newQuestions);
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
-
-    // Reset messages
+    e.preventDefault();
     setSuccessMessage('');
     setErrorMessage('');
 
-    // Validate input fields (you can add more validation as needed)
     if (!title || !type) {
       setErrorMessage('Please fill in all required fields.');
-      setShowModal(true); // Show modal on error
+      setShowModal(true);
       return;
     }
+    if ((type === 'content' || type === 'other')  && !content) {
+      setError('Content is required.');
+      return;
+    }
+    setError('');
 
     try {
-      // Prepare the data to send
+      let quizId = null;
+
+      // If the type is quiz, create the quiz first
+      if (type === 'quiz') {
+        const newQuiz = {
+          lesson: lessonId,
+          title,
+          questions,
+          certificationQuiz,
+          passingScore,
+        };
+        const quizResponse = await apiClient.post(
+          `/api/v1/quizzes/${lessonId}/quiz`,
+          newQuiz,
+        );
+        console.log('quiz response', quizResponse);
+        quizId = quizResponse.data.data.quiz._id; // Assign the created quiz ID
+      }
+
+      // Prepare content submission data
       const newContent = {
         contentTitle: title,
         type,
-        url: type === 'video' ? url : undefined, // Only include if it's a video
-        quizId: type === 'quiz' ? quizId : undefined, // Only include if it's a quiz
-        text: content,
+        url: url ? url : undefined,
+        quiz: quizId ? quizId : undefined,
+        text: content ? content : undefined,
       };
 
-      // Send a POST request to your API
+      // Submit the content
       const response = await apiClient.post(
         `/api/v1/contents/${lessonId}/content`,
         newContent,
-      ); // Adjust the endpoint as necessary
-      console.log('Content added successfully:', response.data);
+      );
 
-      // Set success message
+      console.log('Content added successfully:', response.data);
       setSuccessMessage('Content added successfully!');
-      setShowModal(true); // Show modal on success
+      setShowModal(true);
       triggerReload();
-      // Optionally reset the form
+
+      // Reset form fields
       setTitle('');
       setType('');
       setUrl('');
-      setQuizId('');
       setContent('');
-
-      // Trigger rerender by toggling the reload state
-      setReload((prev) => !prev);
-      
+      setQuestions([
+        { questionText: '', options: [{ optionText: '', isCorrect: false }] },
+      ]);
+      setPassingScore(50);
+      setCertificationQuiz(false);
     } catch (error) {
       console.error('Error adding content:', error);
       setErrorMessage('Failed to add content. Please try again.');
-      setShowModal(true); // Show modal on error
+      setShowModal(true);
     }
   };
-
-  useEffect(() => {
-    // This effect can be used to refetch data or trigger a page rerender
-    // when the reload state changes. For example, if you're fetching
-    // the content list after adding, you can refetch it here.
-    console.log('Rerender or data fetch can happen here on success');
-  }, [reload]);
 
   const closeModal = () => {
     setShowModal(false);
     setSuccessMessage('');
     setErrorMessage('');
-    navigate(-1); // Go back to previous page
+    navigate(-1);
   };
 
   return (
     <div>
-      {/* <BackButton /> */}
       <h1 className="mt-8 text-2xl font-poppins mb-4">Add New Content</h1>
-
-      {/* Modal for Success and Error Messages */}
       <Modal show={showModal} size="md" popup={true} onClose={closeModal}>
         <Modal.Header />
         <Modal.Body>
           {successMessage ? (
             <div className="text-center">
-              <h3 className="mb-5 text-lg font-normal text-green-600 dark:text-white">
+              <h3 className="mb-5 text-lg font-normal text-green-600">
                 {successMessage}
               </h3>
-              <Button
-                color="success"
-                onClick={closeModal}
-                className="dark:text-yellow-400 font-bold hover:text-white"
-              >
+              <Button color="success" onClick={closeModal}>
                 OK
               </Button>
             </div>
@@ -118,11 +163,7 @@ export default function AddContent() {
               <h3 className="mb-5 text-lg font-normal text-red-600">
                 {errorMessage}
               </h3>
-              <Button
-                color="failure"
-                onClick={closeModal}
-                className="dark:text-yellow-400 font-bold hover:text-white"
-              >
+              <Button color="failure" onClick={closeModal}>
                 Close
               </Button>
             </div>
@@ -130,25 +171,23 @@ export default function AddContent() {
         </Modal.Body>
       </Modal>
 
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-4 mb-4 ">
-        <div className="flex space-x-4 items-center justify-start w-full lg:w-1/2">
+      <form onSubmit={handleSubmit} className="flex flex-col space-y-4 mb-4">
+        <div className="flex space-x-4 items-center lg:w-1/2">
           <Label htmlFor="title" value="Content Title" />
           <TextInput
             id="title"
             type="text"
-            className=" flex-1"
-            sizing="md"
+            className="flex-1"
             placeholder="Content title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
           />
         </div>
-        <div className="flex space-x-4 w-full items-center justify-start lg:w-1/2">
+        <div className="flex space-x-4 items-center lg:w-1/2">
           <Label htmlFor="type" value="Content Type" />
           <Select
             id="type"
-            className="flex-1"
             required
             value={type}
             onChange={(e) => setType(e.target.value)}
@@ -160,73 +199,97 @@ export default function AddContent() {
             <option value="other">Other</option>
           </Select>
         </div>
-        {type === 'video' && (
-          <div className="flex space-x-4 items-center justify-start lg:w-1/2">
+        {(type === 'video' || type === 'other') && (
+          <div className="flex space-x-4 items-center lg:w-1/2">
             <Label htmlFor="url" value="Video Link" />
             <TextInput
               id="url"
               type="text"
-              className="outline-none flex-1"
-              sizing="md"
               placeholder="Video Link"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
+              required={type === 'video'}
             />
           </div>
         )}
-        {type === 'quiz' && (
-          <div className="flex space-x-4 items-center justify-start w-full lg:w-1/2">
-            <Label htmlFor="quiz" value="Quiz ID" />
+        {(type === 'quiz' || type === 'other') && (
+          <div>
+            {questions.map((question, questionIndex) => (
+              <div key={questionIndex} className="p-4 mb-4 rounded">
+                <Textarea
+                  value={question.questionText}
+                  onChange={(e) => handleQuestionChange(questionIndex, e)}
+                  placeholder="Question Text"
+                  required={type === 'quiz'} // Required only if type is 'quiz'
+                />
+                {question.options.map((option, optionIndex) => (
+                  <div key={optionIndex} className="flex mt-4 items-center">
+                    <TextInput
+                      type="text"
+                      value={option.optionText}
+                      onChange={(e) =>
+                        handleOptionChange(questionIndex, optionIndex, e)
+                      }
+                      placeholder="Option Text"
+                      required={type === 'quiz'} // Optional: Make required if needed
+                    />
+                    <TextInput
+                      type="checkbox"
+                      checked={option.isCorrect}
+                      onChange={() => {
+                        const newQuestions = [...questions];
+                        newQuestions[questionIndex].options[
+                          optionIndex
+                        ].isCorrect = !option.isCorrect;
+                        setQuestions(newQuestions);
+                      }}
+                    />
+                    <label>Correct</label>
+                  </div>
+                ))}
+                <Button type="button" onClick={() => addOption(questionIndex)}>
+                  Add Option
+                </Button>
+              </div>
+            ))}
+            <Button type="button" onClick={addQuestion}>
+              Add Question
+            </Button>
             <TextInput
-              id="quiz"
-              type="text"
-              className="outline-none flex-1"
-              sizing="md"
-              placeholder="Quiz ID"
-              value={quizId}
-              onChange={(e) => setQuizId(e.target.value)}
+              type="number"
+              value={passingScore}
+              onChange={(e) => setPassingScore(e.target.value)}
+              placeholder="Passing Score"
+              required={type === 'quiz'} // Required only if type is 'quiz'
+            />
+            <div className="flex items-center">
+              <label>Certification Quiz</label>
+              <TextInput
+                type="checkbox"
+                checked={certificationQuiz}
+                onChange={(e) => setCertificationQuiz(e.target.checked)}
+              />
+            </div>
+          </div>
+        )}
+        {error && <p className="mt-20 p-2 bg-yellow-300 rounded w-max z-10 text-red-500">{error}</p>}
+        {type !== 'quiz' && type !== 'video' && (
+          <div className="mb-4 border h-48 lg:h-72 h-">
+            <ReactQuill
+              className="w-full h-48 lg:h-60"
+              theme="snow"
+              value={content}
+              onChange={setContent}
             />
           </div>
         )}
-        <div className="flex w-full flex-col">
-          <Label htmlFor="article" value="Add Article" className="mb-4" />
-          <ReactQuill
-            className="h-60 mb-10 overflow-hidden mt-3 w-full ps-32"
-            theme="snow"
-            formats={[
-              'header',
-              'font',
-              'size',
-              'bold',
-              'italic',
-              'underline',
-              'strike',
-              'blockquote',
-              'list',
-              'bullet',
-              'indent',
-              'link',
-              'image',
-            ]}
-            placeholder="Write something amazing..."
-            onChange={setContent}
-            value={content}
-          />
+
+        <div className="mt-4 ">
+          <Button type="submit">Add Content</Button>
+          <Button className='mt-4'  type="button" color="gray" onClick={handleAddContentClose}>
+            Close
+          </Button>
         </div>
-        <AddQuestion />
-        <Button
-          type="submit"
-          className="dark:text-yellow-400 font-bold hover:text-white w-max mb-4"
-        >
-          Publish Content
-        </Button>
-        <Button
-          color="red"
-          className="bg-red-400 hover:bg-red-500 mt-4 w-max"
-          onClick={handleAddContentClose}
-        >
-          Close
-        </Button>
       </form>
     </div>
   );

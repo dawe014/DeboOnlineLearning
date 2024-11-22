@@ -10,7 +10,7 @@ export default function LessonsNav({ course, handleContentSelect }) {
       {/* Sidebar */}
       <Sidebar
         aria-label="Sidebar with multi-level dropdown example"
-        className="sticky top-12 z-10 w-80 h-screen"
+        className="sticky top-12 z-10 w-80 h-[520px]"
       >
         <Sidebar.Items>
           <Sidebar.ItemGroup>
