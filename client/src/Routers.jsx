@@ -21,6 +21,7 @@ import EditContent from './components/EditContent';
 import EditCourse from './components/EditCourse';
 import OpenCourse from './pages/StudentDashboard/OpenCourse';
 import DisplayContent from './pages/StudentDashboard/DisplayContent';
+import Certificate from './pages/StudentDashboard/Certificate';
 // import SignupPage from './pages/SignupPage';
 
 const AppRoutes = () => {
@@ -38,13 +39,13 @@ const AppRoutes = () => {
           <Route path="lesson/:id" element={<DisplayContent />} />
           <Route path="courses" element={<CourseCard />} />
         </Route>
+        <Route path="certificate/:courseId" element={<Certificate />} />
         <Route path="/dashboardinst" element={<InstructorDashboard />}>
           <Route index element={<Statistic />} />
           <Route path="my-courses" element={<ManageCourses />} />
           <Route path="course" element={<ManageLessons />} />
           <Route path="course/content" element={<ManageContents />} />
           <Route path="course/content/add-content" element={<AddContent />} />
-         
 
           <Route path="create-course" element={<CreateCourse />} />
           <Route path="enrolled-students" element={<EnrolledStudents />} />

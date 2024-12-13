@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
 
 import { useEffect, useState } from 'react';
-import { Card } from 'flowbite-react';
+import { Button, Card,  } from 'flowbite-react';
 import apiClient from '../../api/apiClient';
 import { jwtDecode } from 'jwt-decode';
-import { Spinner } from 'flowbite-react';
 import { NavLink } from 'react-router-dom';
+import Loader from '../../components/Loader';
+// import Certificate from './Certificate';
 
 export default function MyCourse() {
   const [courses, setCourses] = useState([]);
@@ -64,9 +65,7 @@ export default function MyCourse() {
   console.log('courses', courses);
   if (loading)
     return (
-      <div className="flex flex-wrap items-center gap-2">
-        <Spinner aria-label="Extra large spinner example" size="xl" />
-      </div>
+      <Loader/>
     );
   console.log(error);
   return (
@@ -79,13 +78,14 @@ export default function MyCourse() {
           name={course.course.title} // Adjust based on your data structure
           progress={course.progress || 0} // Default to 0 if progress is not available
           currentContent={course.currentContent || 0}
+          isCertified={course.certified}
           status={course.completed ? 'Completed' : 'In Progress'} // Adjust based on your data structure
         />
       ))}
     </div>
   );
 }
-function Course({ name, progress, status, id, currentContent }) {
+function Course({ name, progress, status, id, currentContent, isCertified }) {
   return (
     <div className="mb-16">
       <Card className="w-full md:w-2/3 lg:w-1/2 px-4 py-2">
@@ -97,25 +97,43 @@ function Course({ name, progress, status, id, currentContent }) {
           ) : (
             '' // Optional message
           )}
-          <div className="flex items-center justify-between">
-            <p className="font-bold">{status}</p>
-            {/* Conditionally render the button */}
-            {progress > 0 ? (
-              <NavLink to={`/dashboard/courses/${id}/lesson/${currentContent}`}>
-                <button className="font-montserrat font-bold border hover:text-white hover:bg-yellow-500 text-yellow-500 px-3 py-2 border-yellow-300 transition-all duration-200">
-                  Resume
-                </button>
+          {!isCertified ? (
+            <div className="flex items-center justify-between">
+              <p className="font-bold">{status}</p>
+              {/* Conditionally render the button */}
+              {progress > 0 ? (
+                <NavLink
+                  to={`/dashboard/courses/${id}/lesson/${currentContent}`}
+                >
+                  <button className="font-montserrat font-bold border hover:text-white hover:bg-yellow-500 text-yellow-500 px-3 py-2 border-yellow-300 transition-all duration-200">
+                    Resume
+                  </button>
+                </NavLink>
+              ) : (
+                <NavLink to={`/dashboard/courses/${id}`}>
+                  <button className="font-montserrat font-bold border hover:text-white  text-green-500 px-3 py-2 border-green-300 transition-all duration-200">
+                    Start
+                  </button>
+                </NavLink>
+              )}
+            </div>
+          ) : (
+            <div className="flex items-center justify-between">
+              <NavLink to={`/certificate/${id}`}>
+                <Button color="green">View/Download Certificate</Button>
               </NavLink>
-            ) : (
+              {/* Conditionally render the button */}
+
               <NavLink to={`/dashboard/courses/${id}`}>
                 <button className="font-montserrat font-bold border hover:text-white  text-green-500 px-3 py-2 border-green-300 transition-all duration-200">
-                  Start
+                  view
                 </button>
               </NavLink>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </Card>
+      {/* <Certificate /> */}
     </div>
   );
 }

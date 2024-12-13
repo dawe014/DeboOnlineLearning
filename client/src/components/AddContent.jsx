@@ -83,13 +83,16 @@ export default function AddContent() {
       let quizId = null;
 
       // If the type is quiz, create the quiz first
-      if (type === 'quiz') {
+      
+      const score = Number(passingScore);
+      
+      if (type === 'quiz' || type === 'other') {
         const newQuiz = {
           lesson: lessonId,
           title,
           questions,
           certificationQuiz,
-          passingScore,
+          passingScore:score,
         };
         const quizResponse = await apiClient.post(
           `/api/v1/quizzes/${lessonId}/quiz`,
@@ -272,7 +275,11 @@ export default function AddContent() {
             </div>
           </div>
         )}
-        {error && <p className="mt-20 p-2 bg-yellow-300 rounded w-max z-10 text-red-500">{error}</p>}
+        {error && (
+          <p className="mt-20 p-2 bg-yellow-300 rounded w-max z-10 text-red-500">
+            {error}
+          </p>
+        )}
         {type !== 'quiz' && type !== 'video' && (
           <div className="mb-4 border h-48 lg:h-72 h-">
             <ReactQuill
@@ -286,7 +293,12 @@ export default function AddContent() {
 
         <div className="mt-4 ">
           <Button type="submit">Add Content</Button>
-          <Button className='mt-4'  type="button" color="gray" onClick={handleAddContentClose}>
+          <Button
+            className="mt-4"
+            type="button"
+            color="gray"
+            onClick={handleAddContentClose}
+          >
             Close
           </Button>
         </div>

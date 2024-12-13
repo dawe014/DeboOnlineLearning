@@ -15,6 +15,10 @@ const enrollmentSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  certified: {
+    type: Boolean,
+    default: false,
+  },
   completed: {
     type: Boolean,
     default: false,

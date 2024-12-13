@@ -7,13 +7,15 @@ const progressRoutes = require('./routes/progressRoutes');
 const courseContentRoutes = require('./routes/courseContentRoutes');
 const enrollmentRoutes = require('./routes/enrollmentRoutes');
 const quizRoutes = require('./routes/quizRoutes');
-const quizSubmissionRoutes = require('./routes/quizSubmissionRoutes');
+const quizSubmission = require('./routes/quizSubmission');
+const certificateRouter = require('./routes/certificateRouter');
+const statisticsRouter = require('./routes/statisticsRouter');
 
 const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: '*', // Replace with your computer's local IP
   }),
 );
 
@@ -25,7 +27,9 @@ app.use('/api/v1/contents', courseContentRoutes);
 app.use('/api/v1/enrollments', enrollmentRoutes);
 app.use('/api/v1/progress', progressRoutes);
 app.use('/api/v1/quizzes', quizRoutes);
-app.use('/api/v1/quiz-submission', quizSubmissionRoutes);
+app.use('/api/v1/quizSubmissions', quizSubmission);
+app.use('/api/v1/certificate', certificateRouter);
+app.use('/api/v1/stats', statisticsRouter);
 
 app.get('/', (req, res) => res.send('Server is up and running'));
 

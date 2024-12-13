@@ -5,4 +5,8 @@ import eslint from 'vite-plugin-eslint';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), eslint()],
+  server: {
+    host: true, // Listen on all interfaces
+    port: 5173, // Optional: change the port if needed
+  },
 });

@@ -13,25 +13,33 @@ import {
 } from 'flowbite-react';
 import { NavLink } from 'react-router-dom';
 import apiClient from '../api/apiClient'; // Assuming the Axios instance is defined here
+import Loader from './Loader';
 
 export default function ManageCourses() {
   const [courses, setCourses] = useState([]);
   const [showModal, setShowModal] = useState(false); // For showing the modal
   const [courseToDelete, setCourseToDelete] = useState(null); // Store the course to be deleted
-
+const [loading, setLoading] = useState(true)
   // Fetch courses from the API when the component mounts
   const fetchCourses = async () => {
     try {
+            setLoading(true);
+
       const response = await apiClient.get('/api/v1/courses');
       setCourses(response.data.data.courses); // Assuming response.data contains the list of courses
+            setLoading(false);
+
     } catch (error) {
       console.error('Error fetching courses:', error);
+            setLoading(false);
+
     }
   };
   console.log(courses);
   
 
   useEffect(() => {
+    
     fetchCourses();
   }, []);
 
@@ -50,6 +58,9 @@ export default function ManageCourses() {
       console.error('Error deleting course:', error);
     }
   };
+  if(loading){
+    return <Loader/>
+  }
 
   return (
     <div>

@@ -39,7 +39,7 @@ const AddQuestion = ({
           {question.options.map((option, optionIndex) => (
             <div
               key={optionIndex}
-              className="flex mt-4 ms-4 items-center space-x-2"
+              className="flex mt-4 ms-4 items-center space-x-2 space-y-2 mb-2"
             >
               <TextInput
                 type="text"
@@ -72,11 +72,11 @@ const AddQuestion = ({
           </Button>
         </div>
       ))}
-      <Button type="button" onClick={addQuestion}>
+      <Button type="button" className="mb-5" onClick={addQuestion}>
         Add Question
       </Button>
       <TextInput
-        className="max-w-sm"
+        className="max-w-sm mb-6"
         type="number"
         value={passingScore}
         onChange={(e) => setPassingScore(Number(e.target.value))}

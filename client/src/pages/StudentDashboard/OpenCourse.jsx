@@ -7,6 +7,7 @@ import { HiMenu } from 'react-icons/hi';
 import { useState, useEffect } from 'react';
 import { IoClose } from 'react-icons/io5';
 import apiClient from '../../api/apiClient';
+import Loader from '../../components/Loader';
 
 export default function OpenCourse() {
   return (
@@ -20,6 +21,7 @@ export default function OpenCourse() {
 function Dashboard() {
   const [isOpen, setIsOpen] = useState(false); // Sidebar state
   const [course, setCourse] = useState(null);
+  const [courseName, setCourseName] = useState(null);
   const [loading, setLoading] = useState(true);
   const [myProgress, setMyProgress] = useState(0);
   const [error, setError] = useState(null);
@@ -28,11 +30,15 @@ function Dashboard() {
   const navigate = useNavigate();
   console.log(courseId);
   useEffect(() => {
+    setLoading(true)
     const fetchCourseData = async () => {
       try {
+              setLoading(true);
+
         const response = await apiClient.get(`/api/v1/courses/${courseId}`);
         setCourse(response.data.data.course);
-
+        setCourseName(response.data.data.course.title);
+console.log("response",response)
         
         const allContents = response.data.data.course.lessons.flatMap(
           (lesson) => lesson.contents,
@@ -57,21 +63,26 @@ function Dashboard() {
       } catch (err) {
         setError('Failed to load course data.');
         console.error(err);
-      } finally {
+} finally {
         setLoading(false);
       }
     };
 
     const fetchProgress = async () => {
+      
       try {
+              setLoading(true);
+
         const progressResponse = await apiClient.get(
           `/api/v1/progress/course/${courseId}`,
         );
         console.log('progress calculate', progressResponse.data.data);
         setMyProgress(progressResponse.data.data.overallProgress);
+
       } catch (err) {
         setError('Failed to load course progress.');
         console.error(err);
+
       }
     };
 
@@ -156,7 +167,7 @@ function Dashboard() {
     setIsOpen(!isOpen);
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div><Loader/></div>;
   if (error) return <div>{error}</div>;
 
   return (
@@ -186,7 +197,7 @@ function Dashboard() {
       <div className="flex flex-col lg:flex-row lg:space-x-4 sm:space-y-2 mt-4 items-start lg:justify-between">
         <div className="flex justify-start space-x-4 items-center">
           <FaBookReader size={26} className="text-yellow-500" />
-          <h1 className="text-md md:text-3xl font-extrabold">{course.title}</h1>
+          <h1 className="text-md md:text-3xl font-extrabold">{courseName}</h1>
         </div>
         <div className="flex justify-start space-x-4 items-center">
           <Progress
@@ -211,7 +222,7 @@ function Dashboard() {
           />
         </div>
         <div className="flex-1">
-          <Outlet context={{ selectedContent, handleNavigate }} />
+          <Outlet context={{ selectedContent, handleNavigate, courseName }} />
         </div>
       </div>
 

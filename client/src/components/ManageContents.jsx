@@ -11,6 +11,7 @@ import {
 import { NavLink, Outlet, useNavigate, useParams,  } from 'react-router-dom';
 import BackButton from './BackButton';
 import apiClient from '../api/apiClient'; // Assuming you have an API client set up
+import Loader from './Loader';
 
 export default function ManageContents() {
   const { lessonId } = useParams(); // Get the lesson ID from the URL parameters
@@ -18,11 +19,14 @@ export default function ManageContents() {
   const [reload, setReload] = useState(false); // State to trigger rerender
   const [isAddContentOpen, setIsAddContentOpen] = useState(false); // New state to toggle Add Content visibility
   const [lessonTitle, setLessonTitle] = useState('')
+  const [loading, setLoading] = useState(true)
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLessonContents = async () => {
       try {
+              setLoading(true);
+
         // Fetch the lesson to get its content IDs
         const lessonResponse = await apiClient.get(
           `/api/v1/lessons/${lessonId}`,
@@ -35,8 +39,12 @@ export default function ManageContents() {
         // Collect the content data
         const fetchedContents = contentIds.map((data) => data);
         setContents(fetchedContents);
+              setLoading(false);
+
       } catch (error) {
         console.error('Error fetching contents:', error);
+              setLoading(true);
+
       }
     };
 
@@ -65,6 +73,11 @@ export default function ManageContents() {
     setIsAddContentOpen(false); // Close Add Content and show Add button
     navigate(-1)
   };
+
+
+  if(loading){
+    return <Loader/>
+  }
 
   return (
     <div>

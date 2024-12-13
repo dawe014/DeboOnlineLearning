@@ -6,22 +6,29 @@ import { Button, Card, Modal } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 // import axios from 'axios';
 import apiClient from '../api/apiClient';
+import Loader from './Loader';
 export default function CourseCard() {
   const [courses, setCourses] = useState([]);
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchCourses = async () => {
+      setLoading(true);
+
       try {
         const response = await apiClient.get('/api/v1/courses');
         setCourses(response.data.data.courses); // Update the state with the fetched courses
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching courses:', error);
+        setLoading(false);
       }
     };
 
     fetchCourses(); // Call the async function inside useEffect
   }, []); // Empty dependency array to run once when the component mounts
-
+  if (loading) {
+    return <Loader />;
+  }
   console.log(courses);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-16 lg:grid-cols-3 text-white">
@@ -33,13 +40,12 @@ export default function CourseCard() {
 }
 
 export function MyCard({ course }) {
-
   // const token = localStorage.getItem('token');
-  
+
   //   const decodedToken = jwtDecode(token);
-  
 
   const [openModal, setOpenModal] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [enrollmentModalOpen, setEnrollmentModalOpen] = useState(false);
   const [instructorName, setInstructorName] = useState('');
   const [enrollmentMessage, setEnrollmentMessage] = useState('');
@@ -49,12 +55,18 @@ export function MyCard({ course }) {
   useEffect(() => {
     const fetchInstructorName = async () => {
       try {
+              setLoading(true);
+
         const response = await apiClient.get(
           `/api/v1/users/${course.instructor}`,
         );
         setInstructorName(response.data.data.name); // Assuming the API returns a "name" field
+              setLoading(false);
+
       } catch (error) {
         console.error('Error fetching instructor details:', error);
+              setLoading(false);
+
       }
     };
 
@@ -72,7 +84,8 @@ export function MyCard({ course }) {
       // };
 
       const response = await apiClient.post(
-        `/api/v1/enrollments/${course._id}/enroll`);
+        `/api/v1/enrollments/${course._id}/enroll`,
+      );
       console.log('Enrollment successful:', response.data);
       setEnrollmentMessage('Successfully enrolled in the course!');
       setEnrollmentSuccess(true);
@@ -85,6 +98,9 @@ export function MyCard({ course }) {
     }
   };
 
+  if(loading){
+    return <Loader/>
+  }
   return (
     <>
       <Card className="max-w-sm" imgAlt="course image" imgSrc="/image1.png">

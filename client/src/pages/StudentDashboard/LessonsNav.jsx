@@ -4,7 +4,7 @@ import { Sidebar } from 'flowbite-react';
 import { NavLink } from 'react-router-dom';
 
 export default function LessonsNav({ course, handleContentSelect }) {
-  
+  console.log('lesson nav',course)
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}

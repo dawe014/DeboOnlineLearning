@@ -14,6 +14,7 @@ import {
 import { NavLink, Outlet, useParams } from 'react-router-dom';
 import BackButton from './BackButton';
 import apiClient from '../api/apiClient'; // Assuming the Axios instance is defined here
+import Loader from './Loader';
 
 export default function ManageLessons() {
   const [lessons, setLessons] = useState([]);
@@ -23,15 +24,22 @@ export default function ManageLessons() {
   const [lessonToDelete, setLessonToDelete] = useState(null); // Lesson to be deleted
   const inputRef = useRef(null);
   const { id } = useParams(); // Get course ID from URL parameters
+const [loading, setLoading] = useState(true)
 
   const fetchCourseLessons = useCallback(async () => {
     try {
+            setLoading(true);
+
       const courseResponse = await apiClient.get(`/api/v1/courses/${id}`);
       const lessons = courseResponse.data.data.course.lessons || [];
+      setLoading(false);
       setLessons(lessons);
+
     } catch (error) {
       console.error('Error fetching lessons:', error);
       setLessons([]);
+            setLoading(false);
+
     }
   }, [id]); // Dependency on id
 
@@ -79,6 +87,10 @@ export default function ManageLessons() {
       console.error('Error deleting lesson:', error);
     }
   };
+
+  if (loading) {
+    return <Loader/>
+  }
 
   return (
     <div>

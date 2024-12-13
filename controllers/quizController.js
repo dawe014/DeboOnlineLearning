@@ -16,8 +16,14 @@ exports.createQuiz = async (req, res) => {
       });
     }
     const lessonId = lesson._id;
-    const { title, questions } = req.body;
-    const quest = { title, questions, lesson: lessonId };
+    const { title, questions, passingScore, certificationQuiz } = req.body;
+    const quest = {
+      title,
+      questions,
+      lesson: lessonId,
+      certificationQuiz,
+      passingScore,
+    };
     const quiz = await Quiz.create(quest);
 
     res.status(201).json({
