@@ -20,44 +20,41 @@ export default function ManageLessons() {
   const [lessons, setLessons] = useState([]);
   const [newLessonTitle, setNewLessonTitle] = useState('');
   const [isInputVisible, setInputVisible] = useState(false);
-  const [showModal, setShowModal] = useState(false); // Modal visibility state
+  const [showDeleteModal, setShowDeleteModal] = useState(false); // Modal visibility state for delete
+  const [showEditModal, setShowEditModal] = useState(false); // Modal visibility state for edit
   const [lessonToDelete, setLessonToDelete] = useState(null); // Lesson to be deleted
+  const [lessonToEdit, setLessonToEdit] = useState(null); // Lesson to be edited
+  const [editLessonTitle, setEditLessonTitle] = useState(''); // Title for editing
   const inputRef = useRef(null);
   const { id } = useParams(); // Get course ID from URL parameters
-const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
 
   const fetchCourseLessons = useCallback(async () => {
     try {
-            setLoading(true);
-
+      setLoading(true);
       const courseResponse = await apiClient.get(`/api/v1/courses/${id}`);
       const lessons = courseResponse.data.data.course.lessons || [];
       setLoading(false);
       setLessons(lessons);
-
     } catch (error) {
       console.error('Error fetching lessons:', error);
       setLessons([]);
-            setLoading(false);
-
+      setLoading(false);
     }
-  }, [id]); // Dependency on id
+  }, [id]);
 
-  // Fetch lessons associated with the course
   useEffect(() => {
     fetchCourseLessons();
-
     const handleClickOutside = (event) => {
       if (inputRef.current && !inputRef.current.contains(event.target)) {
         setInputVisible(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [fetchCourseLessons]); // Add fetchCourseLessons to the dependency array
+  }, [fetchCourseLessons]);
 
   const handleAddLesson = async () => {
     if (!newLessonTitle) return;
@@ -74,22 +71,40 @@ const [loading, setLoading] = useState(true)
   };
 
   const handleDeleteClick = (lessonId) => {
-    setLessonToDelete(lessonId); // Set the lesson to be deleted
-    setShowModal(true); // Show modal
+    setLessonToDelete(lessonId);
+    setShowDeleteModal(true);
   };
 
   const handleDelete = async () => {
     try {
       await apiClient.delete(`/api/v1/lessons/${id}/lessons/${lessonToDelete}`);
       fetchCourseLessons();
-      setShowModal(false); // Close modal after deletion
+      setShowDeleteModal(false);
     } catch (error) {
       console.error('Error deleting lesson:', error);
     }
   };
 
+  const handleEditClick = (lesson) => {
+    setLessonToEdit(lesson);
+    setEditLessonTitle(lesson.lessonTitle);
+    setShowEditModal(true);
+  };
+
+  const handleUpdateLesson = async () => {
+    try {
+      await apiClient.patch(`/api/v1/lessons/${lessonToEdit._id}`, {
+        lessonTitle: editLessonTitle,
+      });
+      fetchCourseLessons();
+      setShowEditModal(false);
+    } catch (error) {
+      console.error('Error updating lesson:', error);
+    }
+  };
+
   if (loading) {
-    return <Loader/>
+    return <Loader />;
   }
 
   return (
@@ -117,8 +132,9 @@ const [loading, setLoading] = useState(true)
                   </TableCell>
                   <TableCell className="flex space-x-4">
                     <NavLink
-                      to={`/edit-lesson/${lesson._id}`}
+                      to="#"
                       className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
+                      onClick={() => handleEditClick(lesson)}
                     >
                       Edit
                     </NavLink>
@@ -133,7 +149,7 @@ const [loading, setLoading] = useState(true)
                       className="font-medium text-red-600 hover:underline dark:text-red-500"
                       onClick={(e) => {
                         e.preventDefault();
-                        handleDeleteClick(lesson._id); // Trigger modal
+                        handleDeleteClick(lesson._id);
                       }}
                     >
                       Delete
@@ -182,7 +198,7 @@ const [loading, setLoading] = useState(true)
       </div>
 
       {/* Modal for Delete Confirmation */}
-      <Modal show={showModal} onClose={() => setShowModal(false)}>
+      <Modal show={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
         <Modal.Header>Confirm Deletion</Modal.Header>
         <Modal.Body>
           <div className="space-y-6 text-yellow-50">
@@ -193,7 +209,33 @@ const [loading, setLoading] = useState(true)
           <Button color="failure" onClick={handleDelete}>
             Delete
           </Button>
-          <Button color="gray" onClick={() => setShowModal(false)}>
+          <Button color="gray" onClick={() => setShowDeleteModal(false)}>
+            Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal for Editing Lesson */}
+      <Modal show={showEditModal} onClose={() => setShowEditModal(false)}>
+        <Modal.Header>Edit Lesson Title</Modal.Header>
+        <Modal.Body>
+          <div className="space-y-6">
+            <Label htmlFor="edit-title" value="Lesson Title" />
+            <TextInput
+              id="edit-title"
+              type="text"
+              value={editLessonTitle}
+              onChange={(e) => setEditLessonTitle(e.target.value)}
+              className="outline-none"
+              sizing="md"
+            />
+          </div>
+        </Modal.Body>
+        <Modal.Footer className="flex justify-between">
+          <Button onClick={handleUpdateLesson} className="ml-2">
+            Update
+          </Button>
+          <Button color="gray" onClick={() => setShowEditModal(false)}>
             Cancel
           </Button>
         </Modal.Footer>

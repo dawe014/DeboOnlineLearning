@@ -2,6 +2,7 @@ const express = require('express');
 const courseController = require('../controllers/courseController');
 const protect = require('../middlewares/authMiddleware'); // Your protect middleware
 const roleCheck = require('../middlewares/roleMiddleware');
+const { uploadCoverImage } = require('../utils/multer');
 
 const router = express.Router();
 
@@ -19,6 +20,7 @@ router
   .get(courseController.getCourse) // Get a specific course by ID
   .patch(
     protect,
+    uploadCoverImage.single('coverImage'),
     roleCheck('admin', 'instructor'),
     courseController.updateCourse,
   ) // Update a course

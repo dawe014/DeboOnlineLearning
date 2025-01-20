@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+// import axios from 'axios';
 // import axiosInstance from '../utils/axiosInstance';
 import {jwtDecode} from 'jwt-decode'; // Import jwt-decode
 import Header from '../components/Header';
 import { NavLink } from 'react-router-dom';
 import { Alert } from 'flowbite-react'; // Import Flowbite Alert
+import apiClient from '../api/apiClient';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -17,8 +18,8 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        'http://localhost:3000/api/v1/users/login',
+      const response = await apiClient.post(
+        '/api/v1/users/login',
         {
           email,
           password,
@@ -52,7 +53,7 @@ const LoginPage = () => {
     <>
       <Header />
       <section className="bg-white">
-        <div className="grid grid-cols-1 lg:grid-cols-2">
+        <div className="grid  grid-cols-1 lg:grid-cols-2">
           <div className="relative hidden lg:flex items-end px-4 pb-10 pt-60 sm:pb-16 md:justify-center lg:pb-24 bg-gray-50 sm:px-6 lg:px-8">
             <div className="absolute inset-0">
               <img
@@ -74,7 +75,7 @@ const LoginPage = () => {
               </div>
             </div>
           </div>
-          <div className="flex items-center justify-center px-4 py-10 bg-white sm:px-6 lg:px-8 sm:py-16 lg:py-24">
+          <div className="flex min-h-svh items-center justify-center px-4 py-10 bg-white sm:px-6 lg:px-8 sm:py-16 lg:py-24">
             <div className="xl:w-full xl:max-w-sm 2xl:max-w-md xl:mx-auto">
               <h2 className="text-center md:text-left text-3xl font-bold leading-tight text-black sm:text-4xl">
                 Login

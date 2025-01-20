@@ -6,6 +6,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please provide your name'],
   },
+  bio: {
+    type: String,
+  },
   email: {
     type: String,
     required: [true, 'Please provide your email'],
@@ -16,6 +19,10 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Please provide a password'],
     minlength: 6,
     select: false,
+  },
+  profilePicture: {
+    type: String,
+    default: 'default_profile.jpg', // Default avatar filename
   },
   role: {
     type: String,

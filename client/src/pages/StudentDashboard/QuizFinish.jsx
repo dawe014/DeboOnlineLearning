@@ -35,12 +35,12 @@ function AfterCertificationQuizPassed({ score, courseName }) {
           certificate is ready for download and can be shared on LinkedIn or
           with potential employers.
         </p>
-        <div className="flex justify-between mt-6">
+        <div className="flex flex-col gap-2  md:flex-row  justify-between mt-6">
           <NavLink to={`/certificate/${courseId}`}>
-            <Button color="green">View/Download Certificate</Button>
+            <Button className='w-full' color="green">View/Download Certificate</Button>
           </NavLink>
 
-          <Button color="blue">Continue to Advanced Courses</Button>
+          <Button className='w-full' color="blue">Continue to Advanced Courses</Button>
         </div>
       </Card>
     </div>

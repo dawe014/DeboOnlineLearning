@@ -22,6 +22,10 @@ import EditCourse from './components/EditCourse';
 import OpenCourse from './pages/StudentDashboard/OpenCourse';
 import DisplayContent from './pages/StudentDashboard/DisplayContent';
 import Certificate from './pages/StudentDashboard/Certificate';
+import MyProfilePage from './pages/MyProfilePage';
+import ManageInstructors from './pages/AdminDashboard/ManageInstructors';
+import AddInstructor from './pages/AdminDashboard/AddInstructor';
+import EditUser from './pages/AdminDashboard/EditUser';
 // import SignupPage from './pages/SignupPage';
 
 const AppRoutes = () => {
@@ -31,6 +35,7 @@ const AppRoutes = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/my-profile" element={<MyProfilePage />} />
         <Route path="/dashboard" element={<StudentDashboard />}>
           <Route path="mycourse" element={<MyCourse />} />
           <Route path="courses" element={<CourseCard />} />
@@ -53,7 +58,7 @@ const AppRoutes = () => {
         <Route path="/dashboardadmin" element={<AdminDashboard />}>
           <Route index element={<Statistic />} />
           <Route path="manage-courses" element={<ManageCourses />} />
-          <Route path="manage-courses/edit-course" element={<EditCourse />} />
+          <Route path="manage-courses/edit-course/:id" element={<EditCourse />} />
           <Route path="course/:id" element={<ManageLessons />} />
           <Route
             path="course/lessons/:lessonId/contents"
@@ -69,7 +74,11 @@ const AppRoutes = () => {
           />
 
           <Route path="create-course" element={<CreateCourse />} />
-          <Route path="manage-users" element={<ManageUsers />} />
+          <Route path="manage-instructors" element={<ManageInstructors />} />
+          <Route path="manage-instructors/user/:id" element={<EditUser />} />
+          <Route path="add-instructors" element={<AddInstructor />} />
+          <Route path="manage-students" element={<ManageUsers />} />
+          <Route path="manage-students/user/:id" element={<EditUser />} />
           <Route path="manage-users/user-id" element={<UpdateUser />} />
         </Route>
       </Routes>

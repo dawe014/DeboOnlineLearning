@@ -16,15 +16,19 @@ const courseSchema = new mongoose.Schema({
   category: {
     type: String,
     required: [true, 'A course must have a category'],
-    enum: [
-      'Web Development',
-      'Data Science',
-      'Design',
-      'Marketing',
-      'Business',
-      'Others',
-    ],
     default: 'Others',
+  },
+  customCategory: {
+    type: String,
+    trim: true,
+    required: function () {
+      return this.category === 'Others'; // customCategory is required only if category is "Others"
+    },
+  },
+  coverImage: {
+    type: String, // Store the path or URL of the uploaded cover image
+    required: [true, 'A course must have a cover image'],
+    default: 'image1.png',
   },
   instructor: {
     type: mongoose.Schema.Types.ObjectId,

@@ -18,7 +18,7 @@ exports.getAllLessons = async (req, res) => {
 // Get a specific lesson by ID
 exports.getLesson = async (req, res) => {
   try {
-    console.log(req.body);
+    // console.log(req.body);
     const lesson = await Lesson.findById(req.params.id).populate('contents');
     if (!lesson) {
       return res
@@ -62,17 +62,10 @@ exports.createLesson = async (req, res) => {
 // Update a lesson
 exports.updateLesson = async (req, res) => {
   try {
+    console.log('from update', req.params);
     const lesson = await Lesson.findById(req.params.id);
     if (!lesson) {
       return res.status(404).json({ message: 'Lesson not found' });
-    }
-    if (
-      req.user.id !== lesson.instructor.toString() &&
-      req.user.role !== 'admin'
-    ) {
-      return res
-        .status(403)
-        .json({ message: 'Not authorized to update this lesson' });
     }
 
     const updatedLesson = await Lesson.findByIdAndUpdate(
@@ -83,6 +76,7 @@ exports.updateLesson = async (req, res) => {
         runValidators: true,
       },
     );
+    console.log(updatedLesson);
     if (!updatedLesson) {
       return res
         .status(404)

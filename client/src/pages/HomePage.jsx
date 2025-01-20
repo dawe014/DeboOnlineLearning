@@ -14,12 +14,15 @@ export default function HomePage() {
 
 function CoursesList() {
   return (
-    <section id="courses" className="bg-yellow-50  dark:bg-slate-800">
-      <div className="container pt-16 pb-14 px-4  md:px-8 mx-auto">
+    <section id="courses" className="bg-yellow-50  dark:bg-slate-800 mx-auto">
+      <div className="container pt-16 pb-14 px-4  md:px-8 mx-auto" >
         <h1 className="text-center text-4xl font-bold font-montserrat text-slate-900 dark:text-white capitalized">
           Explore courses
         </h1>
+        <div className="mx-auto flex justify-center items-center">
+
         <CourseCard/>
+        </div>
       </div>
     </section>
   );

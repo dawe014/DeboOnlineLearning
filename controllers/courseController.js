@@ -58,10 +58,13 @@ exports.createCourse = async (req, res) => {
 // Update a course
 exports.updateCourse = async (req, res) => {
   try {
+    // Fetch the course by ID
     const course = await Course.findById(req.params.id);
     if (!course) {
       return res.status(404).json({ message: 'Course not found' });
     }
+    console.log(req.body);
+    // Check authorization
     if (
       req.user.id !== course.instructor.toString() &&
       req.user.role !== 'admin'
@@ -71,6 +74,19 @@ exports.updateCourse = async (req, res) => {
         .json({ message: 'Not authorized to update this course' });
     }
 
+    // Process the cover image if uploaded
+    if (req.file) {
+      req.body.coverImage = req.file.filename; // Assuming `req.file.path` contains the file's saved path
+    }
+    console.log(req.file.filename);
+
+    // Handle custom category when 'Others' is selected
+    if (req.body.category === 'Others' && req.body.customCategory) {
+      req.body.category = req.body.customCategory; // Replace 'Others' with the custom category
+      delete req.body.customCategory; // Remove customCategory from request body
+    }
+
+    // Update the course
     const updatedCourse = await Course.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -79,16 +95,23 @@ exports.updateCourse = async (req, res) => {
         runValidators: true,
       },
     );
+
     if (!updatedCourse) {
       return res
         .status(404)
         .json({ status: 'fail', message: 'Course not found' });
     }
-    res
-      .status(200)
-      .json({ status: 'success', data: { course: updatedCourse } });
+
+    // Send the response
+    res.status(200).json({
+      status: 'success',
+      data: { course: updatedCourse },
+    });
   } catch (err) {
-    res.status(400).json({ status: 'fail', message: err.message });
+    res.status(400).json({
+      status: 'fail',
+      message: err.message,
+    });
   }
 };
 

@@ -10,6 +10,7 @@ const quizRoutes = require('./routes/quizRoutes');
 const quizSubmission = require('./routes/quizSubmission');
 const certificateRouter = require('./routes/certificateRouter');
 const statisticsRouter = require('./routes/statisticsRouter');
+const imageRouter = require('./routes/imageRouter');
 
 const app = express();
 app.use(express.json());
@@ -30,6 +31,7 @@ app.use('/api/v1/quizzes', quizRoutes);
 app.use('/api/v1/quizSubmissions', quizSubmission);
 app.use('/api/v1/certificate', certificateRouter);
 app.use('/api/v1/stats', statisticsRouter);
+app.use('/api/v1/images', imageRouter);
 
 app.get('/', (req, res) => res.send('Server is up and running'));
 

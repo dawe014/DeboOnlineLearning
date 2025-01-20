@@ -8,13 +8,13 @@ const Course = require('../models/Course');
 // Get progress for a student in a specific course
 exports.getProgress = async (req, res) => {
   const { studentId, courseId } = req.params;
-  console.log('progress', req.params);
+  // console.log('progress', req.params);
   try {
     const progress = await Progress.find({
       student: studentId,
       course: courseId,
     });
-    console.log('the progress', progress);
+    // console.log('the progress', progress);
     if (!progress) {
       return res.status(404).json({
         status: 'fail',
@@ -36,13 +36,13 @@ exports.getProgress = async (req, res) => {
 exports.myProgress = async (req, res) => {
   const { courseId } = req.params;
   const studentId = req.user.id;
-  console.log('progress', req.params);
+  // console.log('progress', req.params);
   try {
     const progress = await Progress.find({
       student: studentId,
       course: courseId,
     });
-    console.log('the progress', progress);
+    // console.log('the progress', progress);
     if (!progress) {
       return res.status(404).json({
         status: 'fail',
@@ -64,7 +64,7 @@ exports.myProgress = async (req, res) => {
 
 // Update progress (mark lesson or content as completed)
 exports.updateProgress = async (req, res) => {
-  console.log('from progress controller', req.user.id);
+  // console.log('from progress controller', req.user.id);
   const { courseId, contentId, lessonId, completedContentId } = req.body;
   const studentId = req.user.id;
   try {
@@ -72,7 +72,7 @@ exports.updateProgress = async (req, res) => {
       student: studentId,
       course: courseId,
     });
-    console.log(progress);
+    // console.log(progress);
 
     if (!progress) {
       return res.status(404).json({ message: 'Progress not found' });
@@ -100,11 +100,11 @@ exports.updateProgress = async (req, res) => {
     const lesson = course.lessons.find(
       (curLesson) => curLesson._id.toString() === lessonId,
     );
-    console.log(lesson);
+    // console.log(lesson);
     const allContentsCompleted = lesson.contents.every((content) =>
       progress.completedContents.includes(content._id),
     );
-    console.log('allcontent completed', allContentsCompleted);
+    // console.log('allcontent completed', allContentsCompleted);
 
     if (allContentsCompleted && !progress.completedLessons.includes(lessonId)) {
       progress.completedLessons.push(lessonId);

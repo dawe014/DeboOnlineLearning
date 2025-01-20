@@ -4,7 +4,6 @@ const lessonSchema = new mongoose.Schema({
   lessonTitle: {
     type: String,
     required: [true, 'A lesson must have a title'],
-    unique: true,
   },
   contents: [
     {

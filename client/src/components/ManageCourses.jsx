@@ -92,7 +92,7 @@ const [loading, setLoading] = useState(true)
                   <TableCell>{course.status}</TableCell>
                   <TableCell className="flex space-x-4">
                     <NavLink
-                      to={`/edit-course/${course._id}`}
+                      to={`edit-course/${course._id}`}
                       className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
                     >
                       Edit

@@ -29,9 +29,9 @@ export default function CourseCard() {
   if (loading) {
     return <Loader />;
   }
-  console.log(courses);
+  console.log('courses',courses);
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-16 lg:grid-cols-3 text-white">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-16 lg:grid-cols-3 text-white mx-auto">
       {courses.map((course) => (
         <MyCard key={course.id} course={course} />
       ))}
@@ -103,7 +103,11 @@ export function MyCard({ course }) {
   }
   return (
     <>
-      <Card className="max-w-sm" imgAlt="course image" imgSrc="/image1.png">
+      <Card
+        className="max-w-sm"
+        imgAlt="course image"
+        imgSrc={`http://localhost:3000/api/v1/images/cover_images/${course.coverImage}`}
+      >
         <a href="#">
           <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
             {course.title}

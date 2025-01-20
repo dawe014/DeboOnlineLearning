@@ -3,16 +3,16 @@ import { Outlet, useParams, useNavigate, NavLink } from 'react-router-dom';
 import Header from '../../components/Header';
 import { Progress } from 'flowbite-react';
 import LessonsNav from './LessonsNav';
-import { HiMenu } from 'react-icons/hi';
+// import { HiMenu } from 'react-icons/hi';
 import { useState, useEffect } from 'react';
-import { IoClose } from 'react-icons/io5';
+// import { IoClose } from 'react-icons/io5';
 import apiClient from '../../api/apiClient';
 import Loader from '../../components/Loader';
 
 export default function OpenCourse() {
   return (
     <div className="bg-yellow-50 dark:text-white font-montserrat dark:bg-slate-900 min-h-screen">
-      <Header />
+      {/* <Header /> */}
       <Dashboard />
     </div>
   );
@@ -92,6 +92,7 @@ console.log("response",response)
 
   const handleContentSelect = (content) => {
     setSelectedContent(content);
+    setIsOpen(false);
   };
 
   // import axios from 'axios';
@@ -171,71 +172,78 @@ console.log("response",response)
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="container text-slate-900 dark:text-white dark:bg-slate-900 px-4 md:px-8 pt-32 relative">
-      <div className="flex justify-start">
-        {isOpen ? (
-          <IoClose
-            size={24}
-            onClick={toggleMenu}
-            className="cursor-pointer lg:hidden text-2xl fixed top-16  bg-slate-900  left-4 z-50"
-          />
-        ) : (
-          <HiMenu
-            size={24}
-            onClick={toggleMenu}
-            className="cursor-pointer bg-slate-900  lg:hidden text-2xl fixed top-16 left-4 z-50"
-          />
-        )}
-      </div>
-      <NavLink
-        to="/dashboard/mycourse"
-        className="px-4 py-2 border hover:text-white hover:bg-yellow-500 md:px-8 border-yellow-500 rounded-lg text-yellow-500 font-bold transition-all duration-200"
-      >
-        My Course
-      </NavLink>
+    <>
+      <Header toggleNav={toggleMenu} isOpenNav={isOpen} />
+      <div className="container text-slate-900 dark:text-white dark:bg-slate-900 px-4 md:px-8 pt-32 relative">
+        {/* <div className="flex justify-start">
+          {isOpen ? (
+            <IoClose
+              size={24}
+              onClick={toggleMenu}
+              className="cursor-pointer lg:hidden text-2xl fixed top-16  bg-slate-900  left-4 z-50"
+            />
+          ) : (
+            <HiMenu
+              size={24}
+              onClick={toggleMenu}
+              className="cursor-pointer bg-slate-900  lg:hidden text-2xl fixed top-16 left-4 z-50"
+            />
+          )}
+        </div> */}
+        <NavLink
+          to="/dashboard/mycourse"
+          className="px-4 py-2 border hover:text-white hover:bg-yellow-500 md:px-8 border-yellow-500 rounded-lg text-yellow-500 font-bold transition-all duration-200"
+        >
+          My Course
+        </NavLink>
 
-      <div className="flex flex-col lg:flex-row lg:space-x-4 sm:space-y-2 mt-4 items-start lg:justify-between">
-        <div className="flex justify-start space-x-4 items-center">
-          <FaBookReader size={26} className="text-yellow-500" />
-          <h1 className="text-md md:text-3xl font-extrabold">{courseName}</h1>
-        </div>
-        <div className="flex justify-start space-x-4 items-center">
-          <Progress
-            className="w-80 text-sm"
-            progress={myProgress}
-            progressLabelPosition="inside"
-            textLabel="Progress"
-            textLabelPosition="outside"
-            size="lg"
-            labelProgress
-            labelText
-          />
-        </div>
-      </div>
-
-      <div className="flex w-full mt-4 space-x-2">
-        <div className="hidden lg:block sticky top-12 z-10 w-80 max-h-screen">
-          <LessonsNav
-            course={course}
-            handleContentSelect={handleContentSelect}
-            // progress={progress}
-          />
-        </div>
-        <div className="flex-1">
-          <Outlet context={{ selectedContent, handleNavigate, courseName }} />
-        </div>
-      </div>
-
-      {isOpen && (
-        <div className="absolute left-4 lg:hidden top-16 shadow-lg">
-          <div className="fixed top-12 z-10 w-64 h-screen">
-            <LessonsNav
-              course={course}
-              handleContentSelect={handleContentSelect}
+        <div className="flex flex-col lg:flex-row lg:space-x-4 sm:space-y-2 mt-4 items-start lg:justify-between">
+          <div className="flex justify-start space-x-4 items-center">
+            <FaBookReader size={26} className="text-yellow-500" />
+            <h1 className="text-md md:text-3xl font-extrabold">{courseName}</h1>
+          </div>
+          <div className="flex justify-start space-x-4 items-center">
+            <Progress
+              className="w-80 text-sm"
+              progress={myProgress}
+              progressLabelPosition="inside"
+              textLabel="Progress"
+              textLabelPosition="outside"
+              size="lg"
+              labelProgress
+              labelText
             />
           </div>
         </div>
-      )}
-    </div>
+
+        <div className="flex w-full mt-4 space-x-2">
+          <div className="hidden lg:block sticky top-12 z-10 w-80 max-h-screen">
+            <LessonsNav
+              course={course}
+              handleContentSelect={handleContentSelect}
+              // progress={progress}
+            />
+          </div>
+          <div className="flex-1">
+            <Outlet context={{ selectedContent, handleNavigate, courseName }} />
+          </div>
+        </div>
+
+        {isOpen && (
+          <div
+            className={`fixed inset-0 bg-slate-900/50 text-yellow-500 font-montserrat transition-all duration-300 ease-in-out z-50 mt-16 lg:hidden ${
+              isOpen ? 'transform-none' : '-translate-x-full'
+            }`}
+          >
+            <div className="fixed w-svw h-screen">
+              <LessonsNav
+                course={course}
+                handleContentSelect={handleContentSelect}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
