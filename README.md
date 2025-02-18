@@ -10,8 +10,6 @@ Welcome to **Debo Online Learning**, a full-stack online learning platform built
 - [Installation](#installation)
 - [Usage](#usage)
 - [Environment Variables](#environment-variables)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Project Structure
 
