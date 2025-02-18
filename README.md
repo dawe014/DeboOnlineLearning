@@ -93,8 +93,6 @@ cd client
 npm run dev
 ```
 
-The application should now be running at `http://localhost:3000` (frontend) and `http://localhost:5000` (backend).
-
 ## Usage
 
 - Open the app in your browser.
