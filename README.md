@@ -107,14 +107,6 @@ The application should now be running at `http://localhost:3000` (frontend) and 
 
 Make sure to configure the `config.env` file in the root directory with the required variables.
 
-## Contributing
-
-Contributions are welcome! Feel free to open issues or submit pull requests.
-
-## License
-
-This project is licensed under the MIT License.
-
 ---
 
 Made with ❤️ by **Dawit Tamiru**
