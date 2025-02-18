@@ -6,7 +6,6 @@ exports.submitQuiz = async (req, res) => {
   try {
     const { lessonId, correctCount, courseId, questionLen, quizId, answers } =
       req.body;
-    console.log('quiz submission', correctCount, courseId, questionLen);
     const userId = req.user.id;
 
     const quiz = await Quiz.findById(quizId);
@@ -71,16 +70,13 @@ exports.getUserSubmissions = async (req, res) => {
 exports.getQuizSubmissions = async (req, res) => {
   try {
     const { quizId, lessonId } = req.params;
-    console.log('lesson id', req.params);
     const userId = req.user.id;
-    console.log('lesson id', userId);
 
     const submissions = await QuizSubmission.findOne({
       quizId,
       userId,
       lessonId,
     });
-    console.log('answers', submissions);
     res.status(200).json(submissions);
   } catch (error) {
     res.status(500).json({

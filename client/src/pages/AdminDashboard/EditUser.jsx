@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Modal } from 'flowbite-react';
-import apiClient from '../../api/apiClient'; // Ensure this is properly set up
+import apiClient from '../../api/apiClient'; 
 import Loader from '../../components/Loader';
 
 export default function EditUser() {

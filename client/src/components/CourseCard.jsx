@@ -1,10 +1,8 @@
 /* eslint-disable react/prop-types */
 
-// import jwtDecode from 'jwt-decode';
 
 import { Button, Card, Modal } from 'flowbite-react';
 import { useEffect, useState } from 'react';
-// import axios from 'axios';
 import apiClient from '../api/apiClient';
 import Loader from './Loader';
 export default function CourseCard() {
@@ -25,11 +23,10 @@ export default function CourseCard() {
     };
 
     fetchCourses(); // Call the async function inside useEffect
-  }, []); // Empty dependency array to run once when the component mounts
+  }, []); 
   if (loading) {
     return <Loader />;
   }
-  console.log('courses',courses);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-16 lg:grid-cols-3 text-white mx-auto">
       {courses.map((course) => (
@@ -40,9 +37,6 @@ export default function CourseCard() {
 }
 
 export function MyCard({ course }) {
-  // const token = localStorage.getItem('token');
-
-  //   const decodedToken = jwtDecode(token);
 
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -55,33 +49,26 @@ export function MyCard({ course }) {
   useEffect(() => {
     const fetchInstructorName = async () => {
       try {
-              setLoading(true);
+        setLoading(true);
 
         const response = await apiClient.get(
           `/api/v1/users/${course.instructor}`,
         );
-        setInstructorName(response.data.data.name); // Assuming the API returns a "name" field
-              setLoading(false);
-
+        setInstructorName(response.data.data.name); 
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching instructor details:', error);
-              setLoading(false);
-
+        setLoading(false);
       }
     };
 
     if (course.instructor) {
-      fetchInstructorName(); // Fetch instructor name when the instructor ID is available
+      fetchInstructorName(); 
     }
   }, [course.instructor]); // Dependency on course.instructor to run the effect when it changes
 
   const handleEnroll = async () => {
     try {
-      // const studentId = `${decodedToken.id}`; // Replace with the actual student ID from your auth context or state
-      // const enrollmentData = {
-      //   course: course._id,
-      //   student: studentId,
-      // };
 
       const response = await apiClient.post(
         `/api/v1/enrollments/${course._id}/enroll`,
@@ -98,8 +85,8 @@ export function MyCard({ course }) {
     }
   };
 
-  if(loading){
-    return <Loader/>
+  if (loading) {
+    return <Loader />;
   }
   return (
     <>
@@ -113,11 +100,7 @@ export function MyCard({ course }) {
             {course.title}
           </h5>
         </a>
-        <div className="mb-1 mt-1 flex items-center">
-          <h5 className="text-md font-semibold tracking-tight text-gray-900 dark:text-white">
-            {instructorName || 'Loading...'}
-          </h5>
-        </div>
+
         <div className="flex items-center justify-between">
           <button
             className="rounded-lg bg-yellow-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-yellow-600 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:bg-yellow-500 dark:hover:bg-yellow-600 dark:focus:ring-yellow-700 transition-all duration-200"
@@ -140,10 +123,13 @@ export function MyCard({ course }) {
         <Modal.Body>
           <div className="space-y-6">
             <h1 className="text-gray-300 dark:text-gray-400">
-              {instructorName}
+              Instructor: {instructorName}
             </h1>
             <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-              {course.category}
+              Category: {course.category}
+            </p>
+            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+              Price: {course.price}ETB
             </p>
             <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
               {course.description}

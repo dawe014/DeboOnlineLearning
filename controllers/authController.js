@@ -13,10 +13,6 @@ exports.registerUser = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    // Check if passwords match
-    // if (password !== confirmPassword) {
-    //   return res.status(400).json({ message: 'Passwords do not match' });
-    // }
     const newUser = await User.create({ name, email, password });
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN,
@@ -43,10 +39,6 @@ exports.registerInstructor = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    // Check if passwords match
-    // if (password !== confirmPassword) {
-    //   return res.status(400).json({ message: 'Passwords do not match' });
-    // }
     const newUser = await User.create({ name, email, password, role });
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN,
@@ -83,7 +75,7 @@ exports.loginUser = async (req, res) => {
 
     // Generate the token including user ID and role
     const token = jwt.sign(
-      { id: user._id, role: user.role }, // Use user.role for the role
+      { id: user._id, role: user.role },
       process.env.JWT_SECRET, // Secret key
       { expiresIn: process.env.JWT_EXPIRES_IN }, // Options
     );
@@ -155,16 +147,11 @@ exports.getSingleUser = async (req, res) => {
 
 exports.getCurrentUser = async (req, res) => {
   try {
-    console.log('from me');
-    console.log('user', req.user);
-
-    // Assuming req.user is populated by your authentication middleware
     const user = await User.findById(req.user.id).select('-password'); // Exclude password for security
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    console.log(user);
 
     res.status(200).json({
       success: true,
@@ -235,24 +222,6 @@ exports.updateUserRole = async (req, res) => {
   }
 };
 
-// Delete User Profile
-// exports.deleteUser = async (req, res) => {
-//   try {
-//     const user = await User.findById(req.user.id);
-
-//     if (!user) {
-//       return res.status(404).json({ message: 'User not found' });
-//     }
-
-//     await user.remove();
-//     res.status(200).json({
-//       success: true,
-//       message: 'User deleted successfully',
-//     });
-//   } catch (error) {
-//     res.status(500).json({ message: 'Server error', error });
-//   }
-// };
 exports.deleteUser = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
@@ -272,8 +241,7 @@ exports.deleteUser = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
   try {
-    console.log('from update my profile');
-    const userId = req.user.id; // Assuming the user ID is stored in `req.user` after authentication
+    const userId = req.user.id;
 
     // Get the updated data from the request body
     const { name, bio, email, currentPassword, newPassword, confirmPassword } =
@@ -330,9 +298,9 @@ exports.updateProfile = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.error(error.name);
+    res.status(500).json({
+      message: `Email already exist. Please use another email and try again`,
+    });
   }
 };
-
-// module.exports = { updateProfile };

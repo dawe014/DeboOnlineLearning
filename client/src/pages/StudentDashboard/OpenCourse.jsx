@@ -3,16 +3,13 @@ import { Outlet, useParams, useNavigate, NavLink } from 'react-router-dom';
 import Header from '../../components/Header';
 import { Progress } from 'flowbite-react';
 import LessonsNav from './LessonsNav';
-// import { HiMenu } from 'react-icons/hi';
 import { useState, useEffect } from 'react';
-// import { IoClose } from 'react-icons/io5';
 import apiClient from '../../api/apiClient';
 import Loader from '../../components/Loader';
 
 export default function OpenCourse() {
   return (
     <div className="bg-yellow-50 dark:text-white font-montserrat dark:bg-slate-900 min-h-screen">
-      {/* <Header /> */}
       <Dashboard />
     </div>
   );
@@ -28,7 +25,6 @@ function Dashboard() {
   const [selectedContent, setSelectedContent] = useState(null);
   const { courseId, id } = useParams(); // Capture both courseId and id from the route
   const navigate = useNavigate();
-  console.log(courseId);
   useEffect(() => {
     setLoading(true)
     const fetchCourseData = async () => {
@@ -38,7 +34,6 @@ function Dashboard() {
         const response = await apiClient.get(`/api/v1/courses/${courseId}`);
         setCourse(response.data.data.course);
         setCourseName(response.data.data.course.title);
-console.log("response",response)
         
         const allContents = response.data.data.course.lessons.flatMap(
           (lesson) => lesson.contents,
@@ -76,7 +71,6 @@ console.log("response",response)
         const progressResponse = await apiClient.get(
           `/api/v1/progress/course/${courseId}`,
         );
-        console.log('progress calculate', progressResponse.data.data);
         setMyProgress(progressResponse.data.data.overallProgress);
 
       } catch (err) {
@@ -175,21 +169,7 @@ console.log("response",response)
     <>
       <Header toggleNav={toggleMenu} isOpenNav={isOpen} />
       <div className="container text-slate-900 dark:text-white dark:bg-slate-900 px-4 md:px-8 pt-32 relative">
-        {/* <div className="flex justify-start">
-          {isOpen ? (
-            <IoClose
-              size={24}
-              onClick={toggleMenu}
-              className="cursor-pointer lg:hidden text-2xl fixed top-16  bg-slate-900  left-4 z-50"
-            />
-          ) : (
-            <HiMenu
-              size={24}
-              onClick={toggleMenu}
-              className="cursor-pointer bg-slate-900  lg:hidden text-2xl fixed top-16 left-4 z-50"
-            />
-          )}
-        </div> */}
+       
         <NavLink
           to="/dashboard/mycourse"
           className="px-4 py-2 border hover:text-white hover:bg-yellow-500 md:px-8 border-yellow-500 rounded-lg text-yellow-500 font-bold transition-all duration-200"
@@ -221,7 +201,6 @@ console.log("response",response)
             <LessonsNav
               course={course}
               handleContentSelect={handleContentSelect}
-              // progress={progress}
             />
           </div>
           <div className="flex-1">

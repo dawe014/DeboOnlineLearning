@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from '../../components/Header';
 import DashboardNav from './DashboardNav';
-// import { HiMenu, HiX } from 'react-icons/hi'; // Menu and close icons
 
 export default function AdminDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -20,17 +19,7 @@ export default function AdminDashboard() {
       <Header toggleNav={toggleSidebar} isOpenNav={isSidebarOpen}/>
       <section className="bg-white container dark:bg-slate-900 dark:text-white flex-1">
         <div className="flex flex-col lg:flex-row">
-          {/* Hamburger menu for mobile */}
-          {/* <div className="lg:hidden p-4 mt-14">
-            <button className="text-yellow-500" onClick={toggleSidebar}>
-              {isSidebarOpen ? (
-                <HiX size={30} /> // Close icon when sidebar is open
-              ) : (
-                <HiMenu size={30} /> // Menu icon when sidebar is closed
-              )}
-            </button>
-          </div> */}
-
+          
           {/* Backdrop for mobile */}
           {isSidebarOpen && (
             <div
@@ -46,13 +35,7 @@ export default function AdminDashboard() {
             }`}
           >
             <div className="flex flex-col pt-4 px-4 space-y-2">
-              {/* Close button inside the modal */}
-              {/* <button
-                className="text-yellow-500 absolute top-4 right-4"
-                onClick={closeSidebar}
-              >
-                <HiX size={30} />
-              </button> */}
+              
               <DashboardNav closeSidebar={closeSidebar} />{' '}
               {/* Pass closeSidebar function */}
             </div>

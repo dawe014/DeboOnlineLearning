@@ -7,16 +7,13 @@ exports.getCertificateDetails = async (req, res) => {
 
   try {
     // Simulate fetching the logged-in user's data
-    const userId = req.user.id; // Assume `req.user` is populated by authentication middleware
+    const userId = req.user.id;
     const user = await User.findById(userId);
-    console.log('user', user);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-    console.log('before course');
     // Fetch course details
     const course = await Course.findById(courseId);
-    console.log('after course', course);
 
     if (!course) {
       return res.status(404).json({ error: 'Course not found' });

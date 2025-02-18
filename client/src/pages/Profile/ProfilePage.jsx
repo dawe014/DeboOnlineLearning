@@ -2,18 +2,13 @@
 
 import { useState } from 'react';
 import ProfileHeader from './ProfileHeader';
-// import StudentProfile from './StudentProfile';
-// import InstructorProfile from './InstructorProfile';
-// import AdminProfile from './AdminProfile';
 import UpdateProfileForm from './UpdateProfileForm';
 
 const ProfilePage = ({ user }) => {
   const [currentUser, setCurrentUser] = useState(user);
   const { role, name, bio, profilePicture } = currentUser;
-  console.log(currentUser);
   const handleProfileUpdate = (updatedData) => {
     setCurrentUser((prev) => ({ ...prev, ...updatedData }));
-    console.log('Updated Profile Data:', updatedData);
   };
 
   return (
@@ -25,12 +20,6 @@ const ProfilePage = ({ user }) => {
           bio={bio}
           profilePicture={profilePicture}
         />
-{/* 
-        {role === 'student' && <StudentProfile courses={currentUser.courses} />}
-        {role === 'instructor' && (
-          <InstructorProfile createdCourses={currentUser.createdCourses} />
-        )}
-        {role === 'admin' && <AdminProfile stats={currentUser.stats} />} */}
 
         <UpdateProfileForm user={currentUser} onUpdate={handleProfileUpdate} />
       </div>

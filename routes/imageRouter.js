@@ -3,7 +3,6 @@ const path = require('path');
 
 const router = express.Router();
 
-// Serve static files from the uploads folder
-router.use('/', express.static(path.join(__dirname, '../uploads'))); // Use correct relative path
+router.use('/', express.static(path.join(__dirname, '../uploads')));
 
 module.exports = router;

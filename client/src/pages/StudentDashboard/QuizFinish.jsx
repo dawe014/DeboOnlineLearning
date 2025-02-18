@@ -1,8 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Card, Button, Alert } from 'flowbite-react';
 import { NavLink, useParams } from 'react-router-dom';
-// import  {downloadCertificate}  from './Certificate';
-// downloadCertificate
 export default function QuizFinish({ score, passingScore, courseName }) {
   return (
     <>

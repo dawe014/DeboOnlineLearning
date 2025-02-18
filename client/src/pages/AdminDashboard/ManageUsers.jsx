@@ -10,7 +10,7 @@ import {
   Modal,
   Button,
 } from 'flowbite-react';
-import apiClient from '../../api/apiClient'; // Make sure to set up the API client properly
+import apiClient from '../../api/apiClient'; 
 import Loader from '../../components/Loader';
 
 export default function ManageUsers() {
@@ -25,8 +25,8 @@ export default function ManageUsers() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await apiClient.get('/api/v1/users/students'); // Adjust this endpoint if necessary
-        setUsers(response.data.data); // Assuming the response returns an array of users
+        const response = await apiClient.get('/api/v1/users/students'); 
+        setUsers(response.data.data); 
       } catch (error) {
         console.log(error)
         setErrorMessage('Error fetching users!');

@@ -89,15 +89,9 @@ export default function DisplayContent() {
   };
 
   const handleStartQuiz = () => {
-    console.log('start now');
     setStarted(true);
   };
-  // const handleFinishQuiz = () => {
-  //   setFinished(true);
-  //   // setStarted(true);
-
-  //   // handleSubmitQuiz();
-  // };
+  
 
   const handleNextQuestion = () => {
     if (currentQuestionIndex < selectedContent.quiz.questions.length - 1) {
@@ -126,18 +120,15 @@ export default function DisplayContent() {
       throw error;
     }
   };
-      console.log('User Answers:', myAnswers);
 
   function showResult() {
 
     let correctCount = 0;
     let wrongCount = 0;
 
-    console.log('User Answers:', myAnswers);
 
     const results = selectedContent.quiz.questions.map((question, index) => {
       const userAnswerIndex = myAnswers[index].selectedOptionIndex;
-      console.log('index', index, myAnswers[index].selectedOptionIndex);
       const isCorrect = question.options[userAnswerIndex]?.isCorrect || false;
 
       if (isCorrect) {
@@ -162,16 +153,13 @@ export default function DisplayContent() {
     setQuizSubmitted(true);
   };
 
-  console.log('score', score);
   const handleSubmitQuiz = async () => {
     let correctCount = 0;
     let wrongCount = 0;
 
-    console.log('User Answers:', userAnswers);
 
     const results = selectedContent.quiz.questions.map((question, index) => {
       const userAnswerIndex = userAnswers[index];
-      console.log('index', index, userAnswers[index]);
       const isCorrect = question.options[userAnswerIndex]?.isCorrect || false;
 
       if (isCorrect) {
@@ -189,13 +177,11 @@ export default function DisplayContent() {
           ?.optionText,
       };
     });
-    console.log('before my score');
 
     setQuizResults(results);
     setSummary({ correct: correctCount, wrong: wrongCount });
     const myScore = (correctCount / questionLen) * 100;
     setScore(myScore);
-    console.log('estion score', score);
     setQuizSubmitted(true);
 
     // Prepare submission payload
@@ -219,7 +205,6 @@ export default function DisplayContent() {
         '/api/v1/quizSubmissions',
         submissionData,
       );
-      console.log('Quiz submitted successfully:', response.data);
 
       // Update the UI based on the backend response
       if (response.data.submission.score !== null) {
@@ -264,7 +249,7 @@ export default function DisplayContent() {
             {!quizSubmitted ? (
               selectedContent.quiz.certificationQuiz ? (
                 // Certification Quiz: One question at a time
-                // !finished ? (
+                
                 !started ? (
                   <QuizStart
                     startQuiz={handleStartQuiz}
@@ -399,10 +384,7 @@ export default function DisplayContent() {
                     <span className="font-semibold">Score:</span>{' '}
                     {summary.correct} / {questionLen}
                   </p>
-                  {/* <p>
-                    <span className="font-semibold">Wrong Answers:</span>{' '}
-                    {summary.wrong}
-                  </p> */}
+                  
                 </div>
               </div>
             )}

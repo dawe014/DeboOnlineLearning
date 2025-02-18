@@ -31,8 +31,3 @@ router
   ); // Delete a course
 
 module.exports = router;
-
-// const roleCheck = require('../middlewares/roleMiddleware');
-
-// const router = express.Router();
-// const protect = require('../middlewares/authMiddleware'); // Protect route for logged-in users

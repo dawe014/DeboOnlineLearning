@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 
 import { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { MdMenu } from 'react-icons/md';
 import { Avatar, Dropdown } from 'flowbite-react';
 import { jwtDecode } from 'jwt-decode';
@@ -13,7 +13,22 @@ export default function Header({ toggleNav, isOpenNav }) {
   const [isOpen, setIsOpen] = useState(false); // State to manage dropdown visibility
   const [user, setUser] = useState(null); // State to hold user info
   const [isLoggedIn, setIsLoggedIn] = useState(false); // State to check if user is logged in
+  const [userRole, setUserRole] = useState(null)
+  const [isSidebar, setIsSidebar] = useState(false);
+const location = useLocation();
+  
 
+  useEffect(() => {
+    setIsSidebar(
+      location.pathname !== '/' &&
+        location.pathname !== '/my-profile' &&
+        location.pathname !== '/dashboard' &&
+        location.pathname !== '/dashboard/mycourse' &&
+        location.pathname !== '/dashboard/courses' &&
+        location.pathname !== '/login' &&
+        location.pathname !== '/register',
+    );
+  }, [location.pathname]);
   useEffect(() => {
     const fetchUserDetails = async () => {
       const token = localStorage.getItem('token'); // Get the token from local storage
@@ -22,9 +37,8 @@ export default function Header({ toggleNav, isOpenNav }) {
         try {
           const decoded = jwtDecode(token); // Decode the token
           const userId = decoded.id;
-
+          setUserRole(decoded.role)
           const response = await apiClient.get(`/api/v1/users/${userId}`);
-          console.log('response', response.data.data.profilePicture);
           if (response.status !== 200) {
             throw new Error('Failed to fetch user details');
           }
@@ -41,7 +55,6 @@ export default function Header({ toggleNav, isOpenNav }) {
 
     fetchUserDetails(); // Call the async function
   }, []);
-
   const toggleMenu = () => {
     setIsOpen(!isOpen); // Toggle the dropdown menu state
   };
@@ -55,8 +68,7 @@ export default function Header({ toggleNav, isOpenNav }) {
   return (
     <div className="z-50 fixed w-screen border-b-2 border-black bg-slate-900">
       <div className="container px-4 md:px-8 text-white mx-auto h-16 flex items-center justify-between">
-        <div className="lg:hidden">
-          {/* Your header content here, e.g., a menu icon */}
+        <div className={`${isSidebar ? '' : 'hidden'} lg:hidden`}>
           {/* Toggle Menu */}
           {isOpenNav ? (
             <IoClose
@@ -117,6 +129,14 @@ export default function Header({ toggleNav, isOpenNav }) {
               inline
             >
               <Dropdown.Item>
+                <NavLink
+                  to={`${userRole === 'admin' ? '/dashboardadmin' : userRole === 'instructor' ? '/dashboardinst' : '/dashboard'}`}
+                  className="block px-4 py-2 text-sm"
+                >
+                  My Dashboard
+                </NavLink>
+              </Dropdown.Item>
+              <Dropdown.Item>
                 <NavLink to="/my-profile" className="block px-4 py-2 text-sm">
                   My Profile
                 </NavLink>
@@ -151,6 +171,12 @@ export default function Header({ toggleNav, isOpenNav }) {
       >
         {isLoggedIn ? (
           <>
+            <NavLink
+              to={`${userRole === 'admin' ? '/dashboardadmin' : userRole === 'instructor' ? '/dashboardinst' : '/dashboard'}`}
+              className="block font-montserrat font-bold border hover:text-white text-yellow-500 px-3 py-2 border-none md:border-yellow-300"
+            >
+              My Dashboard
+            </NavLink>
             <NavLink
               to="/my-profile"
               className="block font-montserrat font-bold border hover:text-white text-yellow-500 px-3 py-2 border-none md:border-yellow-300"

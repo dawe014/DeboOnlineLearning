@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
-// import axios from 'axios';
 import { Alert } from 'flowbite-react'; // Import Flowbite's Alert component
 import apiClient from '../api/apiClient';
 
@@ -27,7 +26,6 @@ function Register() {
     e.preventDefault();
 
     // Basic validation
-    console.log(password, confirmPassword)
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       setSuccess('');

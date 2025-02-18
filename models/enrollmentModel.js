@@ -11,6 +11,10 @@ const enrollmentSchema = new mongoose.Schema({
     ref: 'User',
     required: [true, 'Enrollment must have a student'],
   },
+  tx_ref: {
+    type: String,
+    default: null,
+  },
   enrolledAt: {
     type: Date,
     default: Date.now,

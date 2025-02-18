@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
-// import CoursePage from './pages/CoursePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import CourseCard from './components/CourseCard';
@@ -26,7 +25,6 @@ import MyProfilePage from './pages/MyProfilePage';
 import ManageInstructors from './pages/AdminDashboard/ManageInstructors';
 import AddInstructor from './pages/AdminDashboard/AddInstructor';
 import EditUser from './pages/AdminDashboard/EditUser';
-// import SignupPage from './pages/SignupPage';
 
 const AppRoutes = () => {
   return (

@@ -12,7 +12,7 @@ import {
   Modal,
 } from 'flowbite-react';
 import { NavLink } from 'react-router-dom';
-import apiClient from '../api/apiClient'; // Assuming the Axios instance is defined here
+import apiClient from '../api/apiClient'; 
 import Loader from './Loader';
 
 export default function ManageCourses() {
@@ -26,7 +26,7 @@ const [loading, setLoading] = useState(true)
             setLoading(true);
 
       const response = await apiClient.get('/api/v1/courses');
-      setCourses(response.data.data.courses); // Assuming response.data contains the list of courses
+      setCourses(response.data.data.courses); 
             setLoading(false);
 
     } catch (error) {
@@ -35,7 +35,6 @@ const [loading, setLoading] = useState(true)
 
     }
   };
-  console.log(courses);
   
 
   useEffect(() => {
@@ -71,7 +70,6 @@ const [loading, setLoading] = useState(true)
           <TableHead>
             <TableHeadCell>Course Name</TableHeadCell>
             <TableHeadCell>Category</TableHeadCell>
-            <TableHeadCell>No. of Students</TableHeadCell>
             <TableHeadCell>Status</TableHeadCell>
             <TableHeadCell>
               <span className="sr-only">Edit</span>
@@ -88,7 +86,6 @@ const [loading, setLoading] = useState(true)
                     {course.title}
                   </TableCell>
                   <TableCell>{course.category}</TableCell>
-                  <TableCell>get it later</TableCell>
                   <TableCell>{course.status}</TableCell>
                   <TableCell className="flex space-x-4">
                     <NavLink

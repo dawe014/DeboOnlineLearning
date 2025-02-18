@@ -3,12 +3,12 @@ import { Button, Label, Select, TextInput } from 'flowbite-react';
 import BackButton from './BackButton';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import './custom-quill.css'; // Your custom styles
-import apiClient from '../api/apiClient'; // Import your API client
-import { useParams } from 'react-router-dom'; // Import useParams to get the content ID
+import './custom-quill.css'; 
+import apiClient from '../api/apiClient'; 
+import { useParams } from 'react-router-dom'; 
 
 export default function EditContent() {
-  const { contentId } = useParams(); // Get content ID from URL params
+  const { contentId } = useParams(); 
   const [title, setTitle] = useState('');
   const [type, setType] = useState('');
   const [url, setUrl] = useState('');
@@ -40,11 +40,11 @@ export default function EditContent() {
       try {
         const response = await apiClient.get(`/api/v1/contents/${contentId}`); // Fetch content by ID
         console.log(response)
-        const data = response.data.data.content; // Adjust based on your API response structure
+        const data = response.data.data.content; 
         setTitle(data.contentTitle);
         setType(data.type);
-        setUrl(data.url || ''); // Handle optional URL
-        setQuizId(data.quizId || ''); // Handle optional Quiz ID
+        setUrl(data.url || ''); 
+        setQuizId(data.quizId || ''); 
         setContent(data.text);
       } catch (error) {
         console.error('Error fetching content:', error);
@@ -52,10 +52,10 @@ export default function EditContent() {
     };
 
     fetchContent();
-  }, [contentId]); // Fetch content when component mounts
+  }, [contentId]);
 
   const handleUpdate = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault(); 
 
     try {
       const updatedContent = {
@@ -73,7 +73,6 @@ export default function EditContent() {
       );
       console.log('Content updated successfully:', response.data);
 
-      // Optionally, redirect or show a success message
     } catch (error) {
       console.error('Error updating content:', error);
       alert('Failed to update content. Please try again.');

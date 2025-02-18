@@ -18,7 +18,6 @@ exports.getAllLessons = async (req, res) => {
 // Get a specific lesson by ID
 exports.getLesson = async (req, res) => {
   try {
-    // console.log(req.body);
     const lesson = await Lesson.findById(req.params.id).populate('contents');
     if (!lesson) {
       return res
@@ -62,7 +61,6 @@ exports.createLesson = async (req, res) => {
 // Update a lesson
 exports.updateLesson = async (req, res) => {
   try {
-    console.log('from update', req.params);
     const lesson = await Lesson.findById(req.params.id);
     if (!lesson) {
       return res.status(404).json({ message: 'Lesson not found' });
@@ -76,7 +74,6 @@ exports.updateLesson = async (req, res) => {
         runValidators: true,
       },
     );
-    console.log(updatedLesson);
     if (!updatedLesson) {
       return res
         .status(404)
@@ -91,39 +88,10 @@ exports.updateLesson = async (req, res) => {
 };
 
 // Delete a lesson
-// exports.deleteLesson = async (req, res) => {
-//   try {
-//     const lessonOwn = await Lesson.findById(req.params.id);
-//     if (!lessonOwn) {
-//       return res.status(404).json({ message: 'Lesson not found' });
-//     }
-//     if (
-//       req.user.id !== lessonOwn.instructor.toString() &&
-//       req.user.role !== 'admin'
-//     ) {
-//       return res
-//         .status(403)
-//         .json({ message: 'Not authorized to update this lesson' });
-//     }
-
-//     const lesson = await Lesson.findByIdAndDelete(req.params.id);
-//     if (!lesson) {
-//       return res
-//         .status(404)
-//         .json({ status: 'fail', message: 'Lesson not found' });
-//     }
-//     res.status(204).json({ status: 'success', data: null });
-//   } catch (err) {
-//     res.status(400).json({ status: 'fail', message: err.message });
-//   }
-// };
-
-// Delete a lesson
 exports.deleteLesson = async (req, res) => {
   try {
     const { lessonId, courseId } = req.params; // Assuming lesson ID is passed in the URL
 
-    console.log(req.params);
     // Find the course to ensure it exists
     const course = await Course.findById(courseId);
     if (!course) {

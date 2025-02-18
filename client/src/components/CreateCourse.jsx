@@ -7,7 +7,6 @@ import {
   Alert,
   Spinner,
 } from 'flowbite-react';
-// import axios from 'axios'; // Import axios for HTTP requests
 import apiClient from '../api/apiClient';
 
 export default function CreateCourse() {
@@ -33,9 +32,8 @@ export default function CreateCourse() {
     };
 
     try {
-      setIsSubmitting(true); // Start loading state
-      // Send the course data to the backend using axios POST request
-      const response = await apiClient.post('/api/v1/courses', newCourse); // Replace with your backend API route
+      setIsSubmitting(true); 
+      const response = await apiClient.post('/api/v1/courses', newCourse); 
       console.log(response);
 
       // Set success message

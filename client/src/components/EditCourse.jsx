@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Label, Select, Textarea, TextInput } from 'flowbite-react';
-import { Modal, Button, Spinner } from 'flowbite-react'; // Import Modal and Spinner components
+import { Modal, Button, Spinner } from 'flowbite-react'; 
 import BackButton from './BackButton';
-import apiClient from '../api/apiClient'; // Import your configured API client
+import apiClient from '../api/apiClient'; 
 import { useParams } from 'react-router-dom';
 import Loader from './Loader';
 
@@ -14,11 +14,12 @@ export default function EditCourse() {
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState('');
   const [coverImage, setCoverImage] = useState(null);
+  const [price, setPrice] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [isError, setIsError] = useState(false);
-  const [loading, setLoading] = useState(false); // State for loading spinner
-  const [fetching, setFetching] = useState(false); // State for loading spinner
+  const [loading, setLoading] = useState(false); 
+  const [fetching, setFetching] = useState(false); 
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -26,11 +27,12 @@ export default function EditCourse() {
       try {
         const response = await apiClient.get(`/api/v1/courses/${courseId}`);
         const courseData = response.data.data.course;
-
+        console.log(courseData.price);
         setCourseName(courseData.title || '');
         setCategory(courseData.category || '');
         setDescription(courseData.description || '');
         setStatus(courseData.status || '');
+        setPrice(courseData.price);
       } catch (error) {
         console.log(error);
         setModalMessage('Failed to fetch course details.');
@@ -61,7 +63,8 @@ export default function EditCourse() {
     );
     formData.append('description', description);
     formData.append('status', status);
-    formData.append('coverImage', coverImage);
+    formData.append('price', price);
+    if (coverImage) formData.append('coverImage', coverImage);
 
     try {
       const response = await apiClient.patch(
@@ -81,7 +84,7 @@ export default function EditCourse() {
       setLoading(false); // Stop loading
     }
   };
-if (fetching) return <Loader/>
+  if (fetching) return <Loader />;
 
   return (
     <div>
@@ -118,6 +121,17 @@ if (fetching) return <Loader/>
             <option value="Business">Business</option>
             <option value="Others">Others</option>
           </Select>
+        </div>
+        <div className="flex space-x-4 items-center justify-start">
+          <Label htmlFor="name" value="Course price" />
+          <TextInput
+            id="price"
+            type="number"
+            className="outline-none"
+            value={price}
+            sizing="md"
+            onChange={(e) => setPrice(e.target.value)}
+          />
         </div>
         {category === 'Others' && (
           <div className="flex space-x-4 items-center justify-start">
@@ -198,7 +212,7 @@ if (fetching) return <Loader/>
       >
         <Modal.Header>{isError ? 'Error' : 'Success'}</Modal.Header>
         <Modal.Body>
-          <p className='text-yellow-400'>{modalMessage}</p>
+          <p className="text-yellow-400">{modalMessage}</p>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={() => setShowModal(false)}>Close</Button>

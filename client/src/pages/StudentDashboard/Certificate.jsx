@@ -8,7 +8,6 @@ import apiClient from '../../api/apiClient';
 const Certificate = () => {
   const certificateRef = useRef(null);
   const { courseId } = useParams(); // Extract courseId from URL
-  console.log(courseId)
 const [certificateData, setCertificateData] = useState({
   userName: '',
   courseName: '',
@@ -18,11 +17,9 @@ useEffect(() => {
   const fetchCertificateData = async () => {
     try {
       const response = await apiClient.get(`/api/v1/certificate/${courseId}`);
-      console.log('response', response);
       if (response.statusText !== 'OK') {
         throw new Error('Failed to fetch certificate details');
       }
-      console.log('certificate data', response.data)
       setCertificateData(response.data);
     } catch (error) {
       console.error('Error fetching certificate data:', error);
@@ -31,9 +28,7 @@ useEffect(() => {
 
   fetchCertificateData();
 }, [courseId]);
-console.log(certificateData)
   const downloadCertificate = async () => {
-    console.log('dawe certificate')
     if (certificateRef.current) {
       // Capture the certificate as an image
       const canvas = await html2canvas(certificateRef.current);

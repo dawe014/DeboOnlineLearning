@@ -3,7 +3,6 @@ const Lesson = require('../models/Lesson');
 
 // Create a new quiz
 exports.createQuiz = async (req, res) => {
-  console.log('adding quiz', req.params);
   try {
     const lesson = await Lesson.findById(req.params.id);
     if (!lesson) {

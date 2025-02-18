@@ -2,6 +2,7 @@ import CourseCard from "../components/CourseCard";
 import FooterCom from '../components/Footer';
 import Header from "../components/Header"
 export default function HomePage() {
+  
   return (
     <>
       <Header />

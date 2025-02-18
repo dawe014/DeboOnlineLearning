@@ -17,7 +17,7 @@ export default function ManageContents() {
   const { lessonId } = useParams(); // Get the lesson ID from the URL parameters
   const [contents, setContents] = useState([]);
   const [reload, setReload] = useState(false); // State to trigger rerender
-  const [isAddContentOpen, setIsAddContentOpen] = useState(false); // New state to toggle Add Content visibility
+  const [isAddContentOpen, setIsAddContentOpen] = useState(false); 
   const [lessonTitle, setLessonTitle] = useState('')
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate();
@@ -31,10 +31,8 @@ export default function ManageContents() {
         const lessonResponse = await apiClient.get(
           `/api/v1/lessons/${lessonId}`,
         );
-        console.log('lesson response', lessonResponse.data.data.lesson.lessonTitle);
          setLessonTitle( lessonResponse.data.data.lesson.lessonTitle);
         const contentIds = lessonResponse.data.data.lesson.contents;
-        console.log(contentIds);
 
         // Collect the content data
         const fetchedContents = contentIds.map((data) => data);
@@ -106,13 +104,13 @@ export default function ManageContents() {
                   </TableCell>
                   <TableCell className="flex space-x-4">
                     <NavLink
-                      to={`/dashboardadmin/contents/edit-content/${content._id}`} // Adjust the route for editing
+                      to={`/dashboardadmin/contents/edit-content/${content._id}`} 
                       className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
                     >
                       Edit
                     </NavLink>
                     <button
-                      onClick={() => handleDelete(content._id)} // Call delete handler
+                      onClick={() => handleDelete(content._id)}
                       className="font-medium text-red-600 hover:underline dark:text-red-500"
                     >
                       Delete

@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 
-// import { useState } from 'react';
 import { Button, TextInput, Textarea } from 'flowbite-react';
 
 const AddQuestion = ({

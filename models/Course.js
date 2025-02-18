@@ -18,11 +18,15 @@ const courseSchema = new mongoose.Schema({
     required: [true, 'A course must have a category'],
     default: 'Others',
   },
+  price: {
+    type: Number,
+    default: 0,
+  },
   customCategory: {
     type: String,
     trim: true,
     required: function () {
-      return this.category === 'Others'; // customCategory is required only if category is "Others"
+      return this.category === 'Others';
     },
   },
   coverImage: {

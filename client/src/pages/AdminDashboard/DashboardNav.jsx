@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-//eslint-disable-next-line react/prop-types
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { MdSpaceDashboard } from 'react-icons/md';

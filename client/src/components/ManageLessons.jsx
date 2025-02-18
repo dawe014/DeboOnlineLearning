@@ -13,7 +13,7 @@ import {
 } from 'flowbite-react';
 import { NavLink, Outlet, useParams } from 'react-router-dom';
 import BackButton from './BackButton';
-import apiClient from '../api/apiClient'; // Assuming the Axios instance is defined here
+import apiClient from '../api/apiClient'; 
 import Loader from './Loader';
 
 export default function ManageLessons() {

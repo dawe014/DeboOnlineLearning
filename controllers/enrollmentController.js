@@ -2,7 +2,6 @@ const Enrollment = require('../models/enrollmentModel');
 const Progress = require('../models/progressModel');
 
 const Course = require('../models/Course');
-// const User = require('../models/User');
 
 // Enroll a student in a course
 exports.enrollStudent = async (req, res) => {

@@ -11,7 +11,6 @@ export default function Statistic() {
 
   const decodedToken = jwtDecode(token);
   const { id, role } = decodedToken;
-  console.log('users', id, role);
   useEffect(() => {
     const fetchStats = async () => {
       try {

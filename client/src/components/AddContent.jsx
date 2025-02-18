@@ -9,8 +9,8 @@ import {
 } from 'flowbite-react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import './custom-quill.css'; // Your custom styles
-import apiClient from '../api/apiClient'; // Import your API client
+import './custom-quill.css'; 
+import apiClient from '../api/apiClient'; 
 import { useParams, useOutletContext, useNavigate } from 'react-router-dom';
 
 export default function AddContent() {
@@ -23,7 +23,6 @@ export default function AddContent() {
   const [errorMessage, setErrorMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
 
-  // Quiz State
   const [questions, setQuestions] = useState([
     { questionText: '', options: [{ optionText: '', isCorrect: false }] },
   ]);

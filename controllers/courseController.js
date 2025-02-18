@@ -63,7 +63,6 @@ exports.updateCourse = async (req, res) => {
     if (!course) {
       return res.status(404).json({ message: 'Course not found' });
     }
-    console.log(req.body);
     // Check authorization
     if (
       req.user.id !== course.instructor.toString() &&
@@ -76,9 +75,8 @@ exports.updateCourse = async (req, res) => {
 
     // Process the cover image if uploaded
     if (req.file) {
-      req.body.coverImage = req.file.filename; // Assuming `req.file.path` contains the file's saved path
+      req.body.coverImage = req.file.filename;
     }
-    console.log(req.file.filename);
 
     // Handle custom category when 'Others' is selected
     if (req.body.category === 'Others' && req.body.customCategory) {

@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import axios from 'axios';
-// import axiosInstance from '../utils/axiosInstance';
-import {jwtDecode} from 'jwt-decode'; // Import jwt-decode
+import { jwtDecode } from 'jwt-decode';
 import Header from '../components/Header';
 import { NavLink } from 'react-router-dom';
-import { Alert } from 'flowbite-react'; // Import Flowbite Alert
+import { Alert } from 'flowbite-react';
 import apiClient from '../api/apiClient';
 
 const LoginPage = () => {
@@ -18,13 +16,10 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await apiClient.post(
-        '/api/v1/users/login',
-        {
-          email,
-          password,
-        },
-      );
+      const response = await apiClient.post('/api/v1/users/login', {
+        email,
+        password,
+      });
 
       const token = response.data.token;
       localStorage.setItem('token', token);

@@ -21,17 +21,13 @@ const getAdminStats = async (req, res) => {
 
 // Instructor Statistics Controller
 const getInstructorStats = async (req, res) => {
-  console.log('instructor');
-  console.log(req.params);
   const { instructorId } = req.params;
   // const instructor = instructorId;
-  console.log(instructorId);
   try {
     const courses = await Course.find({
       instructor: instructorId,
     });
     const courseIds = courses.map((course) => course._id);
-    console.log(courses[0]._id);
     const totalEnrollments = await Enrollment.countDocuments({
       course: { $in: courseIds },
     });
