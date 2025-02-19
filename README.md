@@ -83,7 +83,7 @@ CHAPA_AUTH_KEY=<your-chapa-auth-key>
 5. **Run the backend:**
 
 ```bash
-npm run dev
+npm start
 ```
 
 6. **Run the frontend:**
